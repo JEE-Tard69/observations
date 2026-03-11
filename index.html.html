@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Original Notes — Reality Check</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --gold:      #C9933A;
+  --gold-l:    #E8B96A;
+  --gold-dim:  rgba(201,147,58,.12);
+  --gold-line: rgba(201,147,58,.28);
+  --ink:       #0A0C0F;
+  --s1:        #161A1F;
+  --s2:        #1D2228;
+  --s3:        #242B33;
+  --text:      #DDE3EB;
+  --muted:     #7A8694;
+  --faint:     #343D47;
+  --white:     #FFFFFF;
+  --green:     #2ECC71;
+  --green-d:   #1a7a4a;
+  --green-bg:  rgba(46,204,113,.08);
+  --red:       #E74C3C;
+  --red-bg:    rgba(231,76,60,.08);
+  --amber:     #F39C12;
+  --amber-bg:  rgba(243,156,18,.08);
+  --blue:      #3498DB;
+  --blue-bg:   rgba(52,152,219,.08);
+  --serif:     'Cormorant Garamond', Georgia, serif;
+  --sans:      'Outfit', system-ui, sans-serif;
+  --mono:      'DM Mono', monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--ink);color:var(--text);font-size:15px;line-height:1.75;}
+
+.page{max-width:900px;margin:0 auto;padding:0 28px 100px;}
+
+/* Progress */
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--gold);z-index:999;width:0%;transition:width .1s;}
+
+/* ── HERO ── */
+.hero{padding:80px 0 52px;border-bottom:1px solid var(--faint);margin-bottom:56px;position:relative;}
+.hero::after{content:'';position:absolute;bottom:-1px;left:0;width:60px;height:2px;background:var(--gold);}
+.hero-kicker{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;display:flex;align-items:center;gap:10px;}
+.hero-kicker::before{content:'';display:inline-block;width:28px;height:1px;background:var(--gold);}
+.hero h1{font-family:var(--serif);font-size:clamp(40px,5.5vw,66px);font-weight:700;line-height:1.06;letter-spacing:-.015em;color:var(--white);margin-bottom:20px;}
+.hero h1 em{font-style:italic;color:var(--gold-l);font-weight:300;}
+.hero-desc{font-size:15px;color:var(--muted);max-width:600px;line-height:1.7;margin-bottom:32px;font-weight:300;}
+.hero-legend{display:flex;flex-wrap:wrap;gap:16px;}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+/* ── TOC ── */
+.toc{background:var(--s1);border:1px solid var(--faint);border-radius:12px;padding:24px 28px;margin-bottom:60px;}
+.toc-label{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
+.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 28px;}
+.toc-a{display:flex;align-items:baseline;gap:8px;text-decoration:none;padding:5px 0;border-bottom:1px solid var(--faint);transition:border-color .15s;}
+.toc-a:hover{border-bottom-color:var(--gold-line);}
+.toc-let{font-family:var(--serif);font-size:13px;font-weight:700;color:var(--gold);width:16px;flex-shrink:0;}
+.toc-name{font-size:12.5px;color:var(--muted);transition:color .15s;}
+.toc-a:hover .toc-name{color:var(--text);}
+.toc-ct{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--faint);}
+
+/* ── SECTION ── */
+.section{margin-bottom:72px;scroll-margin-top:28px;}
+.sec-eye{display:flex;align-items:flex-start;gap:16px;margin-bottom:18px;}
+.sec-big{font-family:var(--serif);font-size:62px;font-weight:700;line-height:1;color:var(--faint);flex-shrink:0;}
+.sec-tag{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:5px;}
+.sec-h{font-family:var(--serif);font-size:26px;font-weight:700;color:var(--white);line-height:1.2;}
+.sec-div{width:100%;height:1px;background:linear-gradient(90deg,var(--gold) 0%,var(--faint) 25%,transparent 100%);margin-bottom:24px;}
+.sec-note{background:var(--s1);border-left:2px solid var(--gold);border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:24px;font-size:13px;color:var(--muted);font-style:italic;line-height:1.65;}
+
+/* ── OBS CARD ── */
+.obs{background:var(--s2);border:1px solid var(--faint);border-radius:12px;overflow:hidden;margin-bottom:14px;}
+.obs-head{padding:18px 22px 14px;}
+.obs-num{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--faint);text-transform:uppercase;margin-bottom:8px;}
+.obs-text{font-size:14.5px;color:var(--text);line-height:1.75;font-weight:300;}
+.obs-text strong{font-weight:600;color:var(--white);}
+
+/* verdict banner */
+.verdict{display:flex;align-items:center;gap:10px;padding:10px 22px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-top:1px solid var(--faint);}
+.verdict.v-confirmed{background:var(--green-bg);color:var(--green);}
+.verdict.v-partial  {background:var(--amber-bg);color:var(--amber);}
+.verdict.v-speculative{background:var(--red-bg);color:var(--red);}
+.verdict.v-emerging {background:var(--blue-bg);color:var(--blue);}
+
+/* evidence panel */
+.evidence{padding:18px 22px;background:var(--s3);border-top:1px solid var(--faint);}
+.ev-title{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.ev-body{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:12px;}
+.ev-body strong{color:var(--text);font-weight:600;}
+.ev-body em{color:var(--gold-l);font-style:normal;}
+
+/* stat strip */
+.stats{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px;}
+.stat{background:var(--s2);border:1px solid var(--faint);border-radius:8px;padding:12px 16px;flex:1;min-width:130px;}
+.stat-n{font-family:var(--serif);font-size:26px;font-weight:700;color:var(--white);line-height:1;margin-bottom:4px;}
+.stat-l{font-size:11px;color:var(--muted);line-height:1.4;}
+.stat-s{font-size:10px;color:var(--faint);margin-top:3px;font-style:italic;}
+
+/* chart container */
+.chart-wrap{background:var(--s2);border:1px solid var(--faint);border-radius:10px;padding:18px 20px;margin-bottom:12px;}
+.chart-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.chart-sub{font-size:11px;color:var(--muted);margin-bottom:14px;}
+.canvas-box{position:relative;height:200px;}
+.chart-src{font-size:10px;color:var(--faint);font-style:italic;margin-top:8px;}
+
+/* source list */
+.sources{margin-top:10px;display:flex;flex-direction:column;gap:4px;}
+.src{font-size:11px;color:var(--faint);padding-left:12px;position:relative;line-height:1.5;}
+.src::before{content:'—';position:absolute;left:0;color:var(--gold);}
+.src a{color:var(--blue);text-decoration:none;}
+.src a:hover{text-decoration:underline;}
+
+/* flowchart */
+.flowchart{display:flex;flex-direction:column;gap:0;margin:12px 0;}
+.fc-row{display:flex;align-items:center;gap:0;}
+.fc-box{background:var(--s2);border:1px solid var(--faint);border-radius:8px;padding:10px 16px;font-size:12px;color:var(--text);text-align:center;flex:1;}
+.fc-box.gold{border-color:var(--gold-line);background:var(--gold-dim);color:var(--gold-l);}
+.fc-box.green{border-color:rgba(46,204,113,.3);background:var(--green-bg);color:var(--green);}
+.fc-box.red{border-color:rgba(231,76,60,.3);background:var(--red-bg);color:var(--red);}
+.fc-arrow{font-size:16px;color:var(--faint);padding:0 8px;flex-shrink:0;}
+.fc-down{text-align:center;color:var(--faint);font-size:18px;line-height:1;padding:4px 0;}
+
+/* pull quote */
+.pq{margin:4px 0 14px;padding:0 0 0 20px;border-left:3px solid var(--gold);}
+.pq p{font-family:var(--serif);font-size:20px;font-style:italic;font-weight:300;color:var(--text);line-height:1.5;}
+.pq p strong{font-style:normal;font-weight:700;color:var(--gold-l);}
+
+/* footer */
+.doc-footer{margin-top:72px;padding-top:28px;border-top:1px solid var(--faint);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.doc-footer p,.doc-footer span{font-size:11px;color:var(--faint);font-family:var(--mono);}
+
+@page{size:A4;margin:10mm 8mm;}
+@media print{
+  body{background:#0A0C0F;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .obs,.chart-wrap,.stats{page-break-inside:avoid;break-inside:avoid;}
+  .progress,.toc{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="page">
+
+<header class="hero">
+  <div class="hero-kicker">Original Notes · Reality Check · March 2026</div>
+  <h1>Your Observations<br>vs. <em>The World Right Now</em></h1>
+  <p class="hero-desc">Every original observation, exactly as written — matched against current news, research papers, verified data, and real-world trends to show what's confirmed, what's emerging, and what's still speculative.</p>
+  <div class="hero-legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Confirmed — happening now</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Emerging — early signals</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Partially supported</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Speculative — limited evidence</div>
+  </div>
+</header>
+
+<!-- TOC -->
+<nav class="toc">
+  <div class="toc-label">Sections</div>
+  <div class="toc-grid">
+    <a href="#sA" class="toc-a"><span class="toc-let">A</span><span class="toc-name">Geopolitics &amp; Strategic Power</span><span class="toc-ct">10</span></a>
+    <a href="#sB" class="toc-a"><span class="toc-let">B</span><span class="toc-name">Semiconductors &amp; Computing</span><span class="toc-ct">6</span></a>
+    <a href="#sC" class="toc-a"><span class="toc-let">C</span><span class="toc-name">Materials &amp; Resources</span><span class="toc-ct">8</span></a>
+    <a href="#sD" class="toc-a"><span class="toc-let">D</span><span class="toc-name">Urban Infrastructure &amp; Mobility</span><span class="toc-ct">10</span></a>
+    <a href="#sE" class="toc-a"><span class="toc-let">E</span><span class="toc-name">Biology Meets Technology</span><span class="toc-ct">7</span></a>
+    <a href="#sF" class="toc-a"><span class="toc-let">F</span><span class="toc-name">Electric Vehicles &amp; Drivetrains</span><span class="toc-ct">6</span></a>
+    <a href="#sG" class="toc-a"><span class="toc-let">G</span><span class="toc-name">Modular Fashion Design</span><span class="toc-ct">5</span></a>
+    <a href="#sH" class="toc-a"><span class="toc-let">H</span><span class="toc-name">Industrial Cleanliness</span><span class="toc-ct">2</span></a>
+    <a href="#sI" class="toc-a"><span class="toc-let">I</span><span class="toc-name">Sports &amp; Culture</span><span class="toc-ct">2</span></a>
+    <a href="#sJ" class="toc-a"><span class="toc-let">J</span><span class="toc-name">Systems Thinking &amp; Civilisation</span><span class="toc-ct">4</span></a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════
+     A  GEOPOLITICS
+═══════════════════════════════════ -->
+<section class="section" id="sA">
+  <div class="sec-eye">
+    <div class="sec-big">A</div>
+    <div><div class="sec-tag">Section A · 10 observations</div><div class="sec-h">Geopolitics &amp; Strategic Power</div></div>
+  </div>
+  <div class="sec-div"></div>
+  <div class="sec-note">The strongest opening cluster in the document. These observations move from individual country behaviours toward a thesis about how global power itself is being redefined — and events since 2022 have validated almost every point here.</div>
+
+  <!-- OBS 1 -->
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 01 — Russia &amp; Cyber Power</div>
+      <div class="obs-text">One of the first observations concerns Russia and its global positioning. Instead of relying only on visible industrial output, <strong>Russia seems to be strongly associated with cyber capabilities, digital warfare, hacking, computation, and scientific research.</strong> The country appears to invest heavily in asymmetric technological capabilities that do not necessarily show up in consumer industries but still carry significant strategic power.</div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — strongly playing out</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">This has moved from observation to documented operational reality. Russian cyberattacks on NATO member states surged <strong>25% in a single year</strong>, per Microsoft's Digital Defense Report 2025. GRU Unit 29155 — a dedicated cyber warfare unit — has been jointly named by the <em>FBI, CISA, NSA</em>, and Germany's BfV as responsible for attacks on critical infrastructure across 26+ NATO members. In October 2025, a cyberattack shut down check-in systems at London Heathrow, Berlin Brandenburg, and Brussels airports — attributed to Russian actors. Hackers separately opened floodgates at a Norwegian dam by exploiting a weak password — a hybrid physical-cyber operation. NATO is now publicly debating when cyberattacks warrant Article 5 military retaliation — something previously unthinkable.</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-n">+25%</div><div class="stat-l">Surge in Russian cyberattacks on NATO states, year-on-year</div><div class="stat-s">Microsoft Digital Defense Report, 2025</div></div>
+        <div class="stat"><div class="stat-n">26+</div><div class="stat-l">NATO members with confirmed domain scanning by GRU Unit 29155</div><div class="stat-s">CISA Advisory AA24-249A</div></div>
+        <div class="stat"><div class="stat-n">20%</div><div class="stat-l">of Russian state cyber attacks targeted the United States</div><div class="stat-s">Microsoft / Euronews, Oct 2025</div></div>
+        <div class="stat"><div class="stat-n">25%</div><div class="stat-l">of Russian attacks targeted government agencies</div><div class="stat-s">Microsoft / Statista, 2025</div></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Russian State Cyberattack Targets by Country (2024–2025)</div>
+        <div class="chart-sub">Share of known Russian state cyber operations, %</div>
+        <div class="canvas-box"><canvas id="cyberTargets"></canvas></div>
+        <div class="chart-src">Source: Microsoft Digital Defense Report 2025, Euronews Oct 2025</div>
+      </div>
+      <div class="sources">
+        <div class="src">Microsoft Digital Defense Report 2025 — <a href="https://www.euronews.com/next/2025/10/17/russian-cyberattacks-against-nato-members-up-25-in-a-year-analysis-shows" target="_blank">Euronews coverage, Oct 2025 ↗</a></div>
+        <div class="src">CISA / FBI / NSA Joint Advisory AA24-249A — GRU Unit 29155 operations — <a href="https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-249a" target="_blank">cisa.gov ↗</a></div>
+        <div class="src">CSIS — Russia's Shadow War Against the West — <a href="https://www.csis.org/analysis/russias-shadow-war-against-west" target="_blank">csis.org, Mar 2025 ↗</a></div>
+        <div class="src">Recorded Future — Threats to the 2025 NATO Summit — <a href="https://www.recordedfuture.com/research/threats-2025-nato-summit" target="_blank">recordedfuture.com ↗</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OBS 2 -->
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 02 — Japan's Robotics Shift</div>
+      <div class="obs-text">In earlier years, Japan was widely associated with developing humanoid robots, robotic animals, robot bees, and other futuristic mechanical systems. However, in recent years this public narrative seems to have slowed down. <strong>The focus might have shifted toward more practical mechanical industries, manufacturing, policy improvements, and human development</strong> rather than highly visible experimental robotics.</div>
+    </div>
+    <div class="verdict v-partial">~ Partially Supported</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">This is accurate but needs nuance. Honda discontinued its iconic ASIMO humanoid program in <strong>2022</strong>, citing a pivot to practical robotics. Japan still dominates global industrial robot production, shipping approximately <strong>50% of global supply</strong> (IFR World Robotics Report 2024). However, the humanoid robotics space has shifted leadership to the US and China — Boston Dynamics, Figure AI, Tesla Optimus, and Unitree are now the dominant narrative. Japan's government has explicitly prioritised robotics for <em>social care and manufacturing</em> rather than spectacle. The observation is correct in direction; less correct that Japan has declined — it has just deprioritised the performance layer.</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-n">~50%</div><div class="stat-l">Japan's share of global industrial robot production</div><div class="stat-s">IFR World Robotics Report, 2024</div></div>
+        <div class="stat"><div class="stat-n">2022</div><div class="stat-l">Year Honda discontinued ASIMO humanoid program</div><div class="stat-s">Honda Press Release, 2022</div></div>
+      </div>
+      <div class="sources">
+        <div class="src">International Federation of Robotics — World Robotics Report 2024</div>
+        <div class="src">Honda Motor Co. — ASIMO programme discontinuation, 2022</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OBS 3 -->
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 03 — Smaller Chinese Provinces Rising</div>
+      <div class="obs-text">There is also the possibility that <strong>smaller Chinese provinces may rise as powerful economic zones.</strong> While cities like Shenzhen and Shanghai already dominate global headlines, the next wave of economic growth could emerge from less well-known regions where new manufacturing ecosystems and supply chains are being developed.</div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — underway</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">China's central government has explicitly accelerated inland province development since 2020. <strong>Chengdu (Sichuan)</strong> is now a major semiconductor and aerospace hub. <strong>Zhengzhou (Henan)</strong> hosts the world's largest iPhone assembly facility (Foxconn). <strong>Chongqing</strong> has become a top-5 global automotive manufacturing city. The government's "Dual Circulation" strategy (2020–present) explicitly promotes domestic inland consumption and production to reduce coastal concentration. BYD, the world's largest EV manufacturer, has expanded its manufacturing into Henan, Shaanxi, and Shandong. This is not speculation — it is documented industrial policy with measurable outcomes.</div>
+      <div class="sources">
+        <div class="src">China State Council — Dual Circulation Economic Strategy, 2020</div>
+        <div class="src">Brookings Institution — China's Inland Economic Development, 2024</div>
+        <div class="src">BYD Annual Report 2024 — manufacturing location breakdown</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OBS 4 + 5 combined — with TSMC chart -->
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observations 04 &amp; 05 — Taiwan, Semiconductors &amp; Strategic Power</div>
+      <div class="obs-text"><strong>The Taiwan–China–United States tension seems to revolve strongly around semiconductor manufacturing capabilities.</strong> Taiwan's chip fabrication capacity gives it enormous strategic importance, and this technological dependency may be one of the core drivers behind geopolitical friction.<br><br>In a broader sense, <strong>global power might gradually shift away from nuclear dominance toward semiconductor dominance.</strong> Control over computing infrastructure, electronics manufacturing, and advanced chip fabrication could become more decisive than traditional military weapons alone.</div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — the defining geopolitical thesis of our decade</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">As of Q2 2025, TSMC controls <strong>71% of global semiconductor foundry revenue</strong> (TrendForce) and an estimated <strong>90% of advanced chip manufacturing</strong> (sub-7nm nodes). Every major AI chip — Nvidia's Blackwell, Apple's A-series, AMD's EPYC — is manufactured in Taiwan. The US passed the <em>CHIPS and Science Act (2022)</em>, committing $52B in direct subsidies and catalysing $450B+ in private investment. The Trump administration took a <strong>10% equity stake in Intel</strong> out of national security concern about domestic chip capacity. TSMC is simultaneously building fabs in Arizona, Kumamoto (Japan), and Dresden (Germany) — not for commercial reasons, but at geopolitical direction. Export controls on ASML EUV machines to China represent the first time a manufacturing tool has been treated as a strategic weapons-equivalent.</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-n">71%</div><div class="stat-l">TSMC's share of global foundry revenue, Q2 2025</div><div class="stat-s">TrendForce / Motley Fool, Jan 2026</div></div>
+        <div class="stat"><div class="stat-n">90%</div><div class="stat-l">TSMC's share of advanced chip manufacturing (sub-7nm)</div><div class="stat-s">Nasdaq / Motley Fool, 2024</div></div>
+        <div class="stat"><div class="stat-n">$627B</div><div class="stat-l">Global semiconductor market revenue, 2024 — record high</div><div class="stat-s">SIA, Feb 2025</div></div>
+        <div class="stat"><div class="stat-n">$52B</div><div class="stat-l">US CHIPS Act direct subsidy for domestic fab capacity</div><div class="stat-s">CHIPS &amp; Science Act, 2022</div></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Global Semiconductor Foundry Market Share, Q4 2024</div>
+        <div class="chart-sub">Revenue share by manufacturer — illustrates single-point concentration risk</div>
+        <div class="canvas-box"><canvas id="tsmc"></canvas></div>
+        <div class="chart-src">Source: TrendForce Q4 2024 data; CNA / SemiWiki, March 2025</div>
+      </div>
+      <div class="sources">
+        <div class="src">TrendForce — Foundry Market Share Q4 2024, Q2 2025 — <a href="https://semiwiki.com/forum/threads/tsmc-market-share-tops-67-in-q4-advisory-firm.22327/" target="_blank">SemiWiki ↗</a></div>
+        <div class="src">Motley Fool Research — Global Semiconductor Manufacturers by Revenue — <a href="https://www.fool.com/research/semiconductor-manufacturers-by-revenue/" target="_blank">fool.com, Jan 2026 ↗</a></div>
+        <div class="src">Semiconductor Industry Association — 2024 Annual Sales Data — <a href="https://www.semiconductors.org" target="_blank">semiconductors.org ↗</a></div>
+        <div class="src">US CHIPS and Science Act — Public Law 117-167, 2022</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OBS 6 -->
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 06 — Policy Wars Over AI</div>
+      <div class="obs-text">Eventually this technological competition may lead to policy wars. <strong>Nations might begin debating the ethical and legal boundaries of artificial intelligence,</strong> the role of automation in governance, and how humanity should regulate systems that could become more intelligent than humans in certain domains.</div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — already in full swing</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">The policy war is not a future event — it is the current state of affairs. The <em>EU AI Act</em> passed in 2024 as the world's first binding comprehensive AI regulation, classifying systems by risk level. The US issued an Executive Order on AI Safety (Oct 2023), then the Trump administration rescinded Biden's EO (Jan 2025) and issued its own — demonstrating that AI policy is now a direct instrument of geopolitical competition. The <strong>UN Secretary-General's High-Level Advisory Body on AI</strong> published its final report in 2024. Over 50 countries now have formal national AI strategies. China passed its own Generative AI regulations in 2023. The G7's "Hiroshima AI Process" has produced an international code of conduct. This observation is no longer a prediction — it is a description of current events.</div>
+      <div class="sources">
+        <div class="src">EU AI Act — Regulation (EU) 2024/1689, Official Journal of the European Union</div>
+        <div class="src">White House — Executive Order on Safe, Secure, and Trustworthy AI, Oct 2023</div>
+        <div class="src">UN Secretary-General's Advisory Body on AI — Governing AI for Humanity, Final Report, 2024</div>
+        <div class="src">G7 Hiroshima AI Process — International Guiding Principles &amp; Code of Conduct, 2023</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OBS 48-51 -->
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observations 48–51 — India's Defense &amp; China's Infrastructure</div>
+      <div class="obs-text">In defense strategy, <strong>India sometimes appears to rely on purchasing advanced equipment rather than solving long-term research challenges domestically.</strong> Strengthening domestic research in aerospace, satellites, and advanced weapons could improve long-term national security. Strategic alliances and geographic positioning around coastal or island regions could also play an important role. <strong>Chinese infrastructure development near borders, including dams and transport systems, may gradually shift regional power balances.</strong></div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — with important nuance on India</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">India remains the world's <strong>largest arms importer</strong> by volume (SIPRI 2024), despite the government's "Make in India" defence push. Defence R&D spending stands at approximately <strong>1.5% of the defence budget</strong> vs. 12%+ in the US. However, the Tejas Mk2 fighter programme, DRDO's missile systems (BrahMos, Agni-V), and ISRO's expanding launch capacity show genuine indigenisation is underway — it is just slower than strategic necessity demands. On China: the <em>Motuo mega-dam</em> on the Brahmaputra was officially announced in late 2024 as a ¥1 trillion ($137B) project — the world's largest hydropower dam, upstream of India and Bangladesh. Satellite imagery from Planet Labs and CSIR has confirmed accelerated road construction in Galwan, Depsang, and Doklam since 2020.</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-n">#1</div><div class="stat-l">India ranked world's largest arms importer by volume</div><div class="stat-s">SIPRI Arms Transfers Database, 2024</div></div>
+        <div class="stat"><div class="stat-n">$137B</div><div class="stat-l">Estimated cost of China's Motuo dam on Brahmaputra, announced Dec 2024</div><div class="stat-s">Chinese State Council, 2024</div></div>
+      </div>
+      <div class="sources">
+        <div class="src">SIPRI Arms Transfers Database 2024 — sipri.org</div>
+        <div class="src">Chinese State Council — Motuo Hydropower Station announcement, December 2024</div>
+        <div class="src">Indian Ministry of Defence — Annual Report 2023–24</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     B  SEMICONDUCTORS & COMPUTING
+═══════════════════════════════════ -->
+<section class="section" id="sB">
+  <div class="sec-eye">
+    <div class="sec-big">B</div>
+    <div><div class="sec-tag">Section B · 6 observations</div><div class="sec-h">Semiconductors &amp; Computing</div></div>
+  </div>
+  <div class="sec-div"></div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 07 — Semiconductors as Quasi-Living Systems</div>
+      <div class="obs-text">Looking further ahead, <strong>semiconductors might evolve beyond simple passive electronics.</strong> Future chips could potentially sense environmental changes, adjust their behavior, and even repair themselves, giving them characteristics that resemble biological systems.</div>
+    </div>
+    <div class="verdict v-emerging">↗ Emerging — real research, long horizon</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body"><strong>Neuromorphic computing</strong> is the closest real-world parallel. Intel's Loihi 2 chip mimics neural spike-based signalling. IBM's NorthPole processor (published in <em>Science</em>, Oct 2023) eliminates the memory bottleneck by integrating memory within compute, inspired by synaptic architecture. Self-healing electronics using microvascular networks and conductive polymers exist at prototype stage in university labs (MIT, ETH Zurich). DARPA's Electronics Resurgence Initiative funds adaptive chip research. The direction of the observation is correct; the timeline is 15–30 years for meaningful commercial deployment. Not imminent — but not science fiction either.</div>
+      <div class="sources">
+        <div class="src">IBM NorthPole — "Neural Inference at the Frontier of Energy, Space, and Time" — <em>Science</em>, Vol 382, Oct 2023</div>
+        <div class="src">Intel Loihi 2 — Neuromorphic Research Chip Technical Brief, 2022</div>
+        <div class="src">DARPA Electronics Resurgence Initiative — darpa.mil</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 09 — Planet-Scale Sensor Networks</div>
+      <div class="obs-text">Expanding this idea further, <strong>large networks of sensors distributed across the planet could function almost like a planetary nervous system,</strong> collecting environmental data and helping humanity better understand and stabilize ecological systems.</div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — partially deployed already</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">This is no longer a future concept — it's an early operational reality. The number of IoT connected devices <strong>exceeded 18.8 billion in 2024</strong> (IoT Analytics). ESA's Copernicus Earth Observation program operates 6+ Sentinel satellites providing continuous planetary data. NASA's fleet of 22 Earth-observing satellites monitors climate, land, ocean, and atmosphere in near-real-time. The <em>Rainforest Connection</em> project deploys solar-powered acoustic sensors in tree canopies across 40+ countries to detect illegal logging and monitor biodiversity in real time. The Amazon, Congo Basin, and Borneo all have operational sensor networks. The "planetary nervous system" framing is ahead of the mainstream — but the infrastructure is being quietly built.</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-n">18.8B</div><div class="stat-l">IoT connected devices globally, 2024</div><div class="stat-s">IoT Analytics, May 2024</div></div>
+        <div class="stat"><div class="stat-n">40+</div><div class="stat-l">Countries with Rainforest Connection acoustic sensor deployments</div><div class="stat-s">rfcx.org, 2024</div></div>
+      </div>
+      <div class="sources">
+        <div class="src">IoT Analytics — State of IoT 2024 Report — iot-analytics.com</div>
+        <div class="src">ESA Copernicus Programme — copernicus.eu</div>
+        <div class="src">Rainforest Connection — Guardian System — rfcx.org</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 26 — Orbital Data Centers</div>
+      <div class="obs-text">In a more extreme idea, <strong>data centers might eventually be placed in orbit.</strong> Space-based infrastructure could reduce land usage and potentially offer new forms of communication synchronization.</div>
+    </div>
+    <div class="verdict v-emerging">↗ Emerging — funded research, significant barriers</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">ESA funded a formal feasibility study on space-based solar-powered data centers in 2023 under the SOLARIS initiative. Microsoft and ICEYE have explored edge computing in low-Earth orbit. The primary technical barriers remain: radiation hardening, latency (LEO adds ~20ms), thermal management in vacuum, and launch cost economics. At current launch costs (~$1,000/kg on Falcon 9), orbital data storage is economically unfeasible for general use. However, Starship aims to reduce this to ~$100/kg, which changes the calculation significantly. The observation is directionally credible — the 10–20 year timeline depends entirely on launch cost trajectories.</div>
+      <div class="sources">
+        <div class="src">ESA SOLARIS Initiative — Space-Based Solar Power Feasibility Study, 2023 — esa.int</div>
+        <div class="src">SpaceX Starship cost projections — spacex.com</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observations 52–54 — Interpreted Languages &amp; Experimental Computing</div>
+      <div class="obs-text">There is also curiosity about <strong>programming languages that execute code line by line rather than compiling everything at once.</strong> Interactive computational environments allow ideas to be tested quickly and encourage experimentation. Such experimentation-focused computing environments support rapid iteration and exploration.</div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — this has already won</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">Python — an interpreted language — <strong>surpassed JavaScript as the most-used programming language on GitHub</strong> for the first time in 2024 (GitHub Octoverse). Jupyter notebooks had over 10 million public instances on GitHub as of 2023. Observable, Val Town, Replit, and Google Colab represent a massive commercial push toward live, exploratory, line-by-line computation. The dominance of Python in AI/ML research is directly tied to its interpreted, exploratory nature — researchers iterate in notebooks, not compiled binaries. The entire modern AI development workflow validates this observation completely.</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-n">#1</div><div class="stat-l">Python ranked most-used language on GitHub (2024) — first time overtaking JavaScript</div><div class="stat-s">GitHub Octoverse, Nov 2024</div></div>
+        <div class="stat"><div class="stat-n">10M+</div><div class="stat-l">Public Jupyter notebooks on GitHub as of 2023</div><div class="stat-s">GitHub / Jupyter Project, 2023</div></div>
+      </div>
+      <div class="sources">
+        <div class="src">GitHub Octoverse 2024 — octoverse.github.com</div>
+        <div class="src">Jupyter Project — jupyter.org</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     C  MATERIALS
+═══════════════════════════════════ -->
+<section class="section" id="sC">
+  <div class="sec-eye">
+    <div class="sec-big">C</div>
+    <div><div class="sec-tag">Section C · 8 observations</div><div class="sec-h">Materials &amp; Resources</div></div>
+  </div>
+  <div class="sec-div"></div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 18 — Sustainable Mining for EV Materials</div>
+      <div class="obs-text">The increasing demand for electric vehicle batteries will require massive amounts of minerals. This may lead to the development of <strong>sustainable mining techniques designed to extract these resources while minimizing environmental damage.</strong></div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — now a legislative and industrial priority</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">Lithium demand is projected to grow <strong>40x by 2040</strong> under net-zero scenarios (IEA Critical Minerals Report). The Democratic Republic of Congo supplies ~70% of global cobalt. The <em>EU Critical Raw Materials Act</em> (passed 2024) mandates domestic processing of 40% of EU critical mineral needs by 2030. The US Inflation Reduction Act directly ties EV tax credits to domestic or allied-nation sourcing of battery minerals. Direct lithium extraction (DLE) technology — which extracts lithium from brine without evaporation ponds — is now commercially deployed by EnergySource Minerals in California. The observation is correct and has become a central policy concern faster than most expected.</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-n">40×</div><div class="stat-l">Projected growth in lithium demand by 2040 under net-zero scenarios</div><div class="stat-s">IEA Critical Minerals Report, 2024</div></div>
+        <div class="stat"><div class="stat-n">~70%</div><div class="stat-l">DR Congo's share of global cobalt supply</div><div class="stat-s">USGS Mineral Commodity Survey, 2024</div></div>
+      </div>
+      <div class="sources">
+        <div class="src">IEA — Critical Minerals in Clean Energy Transitions, 2024 — <a href="https://www.iea.org/reports/critical-minerals-in-clean-energy-transitions" target="_blank">iea.org ↗</a></div>
+        <div class="src">EU Critical Raw Materials Act — Regulation (EU) 2024/1252</div>
+        <div class="src">US Inflation Reduction Act — IRA battery sourcing provisions, 2022</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 19 — Hybrid Organic–Inorganic Materials</div>
+      <div class="obs-text">Future materials might combine organic and inorganic components. For example, <strong>natural waste products or biological materials could be combined with industrial compounds to create strong and sustainable construction materials.</strong></div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — commercial products already exist</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body"><strong>Mycelium composites</strong> (Ecovative Design) are commercially produced as packaging and building insulation. Hemp-lime (hempcrete) is a structural material used in buildings in the UK, France, and USA. Lignin-reinforced plastics are used in automotive parts by BMW and Toyota. The global bio-based materials market was <strong>$96 billion in 2023</strong> and growing at 15% CAGR (Grand View Research). This is not a future possibility — it is an active commercial sector. The observation significantly underestimated how quickly this was already developing.</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-n">$96B</div><div class="stat-l">Global bio-based materials market size, 2023</div><div class="stat-s">Grand View Research, 2023</div></div>
+        <div class="stat"><div class="stat-n">15%</div><div class="stat-l">CAGR — bio-based materials market growth rate</div><div class="stat-s">Grand View Research, 2023</div></div>
+      </div>
+      <div class="sources">
+        <div class="src">Grand View Research — Bio-based Materials Market Report, 2023</div>
+        <div class="src">Ecovative Design — mycelium composites commercial deployment — ecovative.com</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observations 20–21 — Industrial Oils &amp; "Super Oils"</div>
+      <div class="obs-text">Oil research may not disappear even as energy systems evolve. Instead, <strong>oil could be refined into extremely efficient industrial lubricants</strong> capable of making machines operate with less friction and greater efficiency. In a related idea, there may be <strong>"super oils" or advanced lubrication compounds</strong> created by combining oil with gases, salts, or other chemical additives to enhance mechanical performance dramatically.</div>
+    </div>
+    <div class="verdict v-partial">~ Partially Supported — the field is real but incremental</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">Advanced lubricant research is a legitimate and active field. Ionic liquid lubricants (using salts at room temperature) have been published in <em>Tribology International</em> and are used in aerospace applications. Graphene-enhanced lubricants show 30–40% friction reduction in lab settings. PAO (polyalphaolefin) synthetic oils, already commercially dominant in Formula 1 and aerospace, are an evolved form of this idea. However, calling them "super oils" and framing them as a near-revolutionary development overstates the case — the field advances incrementally, not through step-changes. The idea is sound; the framing is slightly dramatic.</div>
+      <div class="sources">
+        <div class="src">Tribology International — "Ionic liquid lubricants: a review" — Elsevier, 2022</div>
+        <div class="src">ACS Nano — graphene-enhanced lubrication studies, 2021–2023</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observations 22–25 — Desert Sand: Construction, Minerals, Thermal, Storage</div>
+      <div class="obs-text"><strong>Desert sand represents a massive natural resource.</strong> It might be processed and transformed into structural materials. Desert sand may contain trace minerals that could become valuable at industrial scale. Sand might also be used in <strong>thermal management systems</strong> — structured layers of sand absorbing and distributing heat. Storage modules could incorporate <strong>hybrid layers of metals and sand-like materials to improve heat stability.</strong></div>
+    </div>
+    <div class="verdict v-partial">~ Mixed — thermal storage confirmed; construction use is a known challenge</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body"><strong>Sand thermal batteries are operational.</strong> Finland's Polar Night Energy built the world's first commercial sand battery in Tampere (2022) — a 8 MWh system storing heat in 100 tonnes of sand at up to 600°C, with near-zero heat loss over months. This directly validates observations 24–25. However, <strong>desert sand for construction is a well-known problem</strong>: Saharan and Arabian desert sand grains are too smooth and rounded for concrete (concrete requires angular, coarser grains). The UAE imports construction sand despite being surrounded by desert. Observation 22 is a real research direction, but the engineering challenge is significant and unsolved at scale. Mineral extraction from sand (Obs 23) is theoretically valid but economically marginal currently.</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-n">8 MWh</div><div class="stat-l">Capacity of Finland's operational sand thermal battery (Tampere, 2022)</div><div class="stat-s">Polar Night Energy, 2022</div></div>
+        <div class="stat"><div class="stat-n">600°C</div><div class="stat-l">Maximum storage temperature — sand thermal battery</div><div class="stat-s">Polar Night Energy technical specs</div></div>
+      </div>
+      <div class="sources">
+        <div class="src">Polar Night Energy — Vatajankoski sand battery press releases, 2022 — polarnightenergy.fi</div>
+        <div class="src">World Bank — Aggregates Industry: Sand and Gravel Problem, 2022</div>
+        <div class="src">UNEP — Sand and Sustainability: Finding New Solutions for Environmental Governance of Global Sand Resources, 2022</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     D  URBAN & MOBILITY
+═══════════════════════════════════ -->
+<section class="section" id="sD">
+  <div class="sec-eye">
+    <div class="sec-big">D</div>
+    <div><div class="sec-tag">Section D · 10 observations</div><div class="sec-h">Urban Infrastructure &amp; Mobility</div></div>
+  </div>
+  <div class="sec-div"></div>
+  <div class="sec-note">The most coherent chain of reasoning in the document. Urban population pressure is one of the most firmly established trends in all of social science — and every downstream observation about how cities will need to respond is being validated in real time.</div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 12 — Advanced Urban Planning Requirements</div>
+      <div class="obs-text"><strong>Urban population growth will likely require much more advanced city planning.</strong> Cities will need better infrastructure allocation, more efficient transportation networks, and smarter zoning strategies to manage increasing density.</div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — UN data makes this one of the most certain observations in the document</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">The UN World Urbanization Prospects 2025 report confirmed that <strong>57% of humanity now lives in urban areas</strong> and this will rise to <strong>68% by 2050</strong>, adding approximately 2.5 billion urban dwellers. India alone will add 416 million city residents between 2018–2050. Africa's urban population will double by 2050. Cities currently house over <strong>1 billion people in informal settlements</strong> (UN Habitat). The global infrastructure investment gap is estimated at $15 trillion by 2040 (McKinsey Global Institute). This observation is not speculative — it is one of the most empirically robust trends in the entire document.</div>
+      <div class="chart-wrap">
+        <div class="chart-title">Global Urban Population Share 1950–2050</div>
+        <div class="chart-sub">% of world population living in urban areas</div>
+        <div class="canvas-box"><canvas id="urbanPop"></canvas></div>
+        <div class="chart-src">Source: UN World Urbanization Prospects 2025 / UN DESA</div>
+      </div>
+      <div class="sources">
+        <div class="src">UN DESA — World Urbanization Prospects 2025 — <a href="https://www.un.org/sustainabledevelopment/blog/2025/11/press-release-wup2025/" target="_blank">un.org ↗</a></div>
+        <div class="src">UN Habitat — World Cities Report 2024</div>
+        <div class="src">McKinsey Global Infrastructure Initiative — Bridging the Gap, 2016 (updated projections 2023)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 13 — Underground Vehicular Roads</div>
+      <div class="obs-text">One possible solution to urban congestion is <strong>the development of underground vehicular roads.</strong> Instead of using underground space only for metro systems, entire road layers could be built below the surface, allowing vehicles to travel through subterranean traffic networks.</div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — operational in Las Vegas, planned in multiple cities</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">The Boring Company's <strong>Las Vegas Convention Center Loop</strong> has been operational since 2021 — underground EV tunnels carrying passengers between convention halls. An expanded Las Vegas Loop connecting the Strip, airport, and downtown is under construction with 68 planned stations. Chicago awarded a contract study for an underground freight tunnel network. Elon Musk's proposed Chicago O'Hare–downtown tunnel received feasibility approval. Melbourne, Sydney, and London have active feasibility studies for underground road layers. This is no longer conceptual infrastructure planning — it is an operational reality in one of the world's most-visited cities.</div>
+      <div class="sources">
+        <div class="src">The Boring Company — Las Vegas Loop operational data — boringcompany.com</div>
+        <div class="src">City of Las Vegas — Loop expansion agreements, 2023–2025</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 14 — Modular Transport Pods</div>
+      <div class="obs-text"><strong>Transportation itself might become modular.</strong> Individual pods or vehicles could synchronize with others moving in the same direction, temporarily joining together like segments of a snake before separating again when travelers reach their individual destinations.</div>
+    </div>
+    <div class="verdict v-emerging">↗ Emerging — truck platooning is live; passenger equivalent is research-stage</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body"><strong>Commercial truck platooning</strong> — the closest operational equivalent — is actively deployed by Volvo, Scania, and Daimler on European motorways. Trucks travel in electronically coupled convoys 10–15 metres apart, cutting fuel consumption by 10–15%. The EU's European Truck Platooning Challenge ran formal cross-border trials in 2016–2021 and is now in commercial rollout phase. For passenger vehicles, Waymo and Baidu Apollo are researching coordinated autonomous vehicle convoys in shared-lane environments. The snake-like joining concept as described is 10–15 years from deployment, but the engineering foundation is being built now.</div>
+      <div class="sources">
+        <div class="src">European Truck Platooning Challenge — Final Report, 2021 — ec.europa.eu</div>
+        <div class="src">Volvo Trucks — platooning technology press releases, 2022–2024</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observations 15–16 — Personal Vehicles as Hobby Machines / Motorsport Growth</div>
+      <div class="obs-text">If such systems develop, <strong>personal vehicles may gradually shift from being daily necessities to becoming hobby machines</strong> used for recreation or enthusiast driving. As a result, <strong>racetracks and controlled driving environments could become more common places</strong> where people enjoy high-performance vehicles.</div>
+    </div>
+    <div class="verdict v-partial">~ Partially Supported — early signals in high-EV markets</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">In Norway — the world's most EV-saturated country at ~90% new car sales — car club memberships and track day events have grown proportionally with EV adoption. However, overall car ownership has not dropped. The historical analogy (horses becoming recreational after cars) is apt as a long-term direction, but the transition happened over 50 years. Formula E (electric motorsport) grew its global audience by 37% between 2021–2024. The Pikes Peak International Hill Climb has been dominated by EVs since 2018. The observation is a plausible 20–40 year trajectory, with early signals visible in advanced EV markets today.</div>
+      <div class="sources">
+        <div class="src">Formula E — Global audience data, 2024 — fiaformulae.com</div>
+        <div class="src">Norwegian Road Federation — EV ownership statistics, 2024</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 17 — Inter-Land Rocket Logistics</div>
+      <div class="obs-text">There could also be new forms of long-distance logistics, such as <strong>rockets that travel through the upper atmosphere to deliver emergency supplies quickly across continents.</strong></div>
+    </div>
+    <div class="verdict v-emerging">↗ Emerging — US military funded; commercial viability unproven</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">The <strong>US Air Force's "Rocket Cargo" programme</strong> — Project Jarvis — received formal funding in 2021 to explore Starship-class rockets for rapid military logistics. SpaceX and the USAF have signed agreements to develop point-to-point rocket freight. SpaceX's Earth-to-Earth travel proposal targets sub-60-minute delivery between any two cities on Starship. The challenge is not physics — it's economics and infrastructure. Landing pads near cities, acoustic impact, safety corridors, and per-kilogram costs (currently $1,000–5,000) make it viable only for ultra-high-value or emergency payloads. The military application is further along than the commercial one.</div>
+      <div class="sources">
+        <div class="src">US Air Force — Rocket Cargo programme, Project Jarvis RFP, 2021</div>
+        <div class="src">SpaceX — Earth-to-Earth Starship presentation — spacex.com</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observations 11, 27–28, 59 — Micro-Transport, Embedded Lighting, Invisible Infrastructure</div>
+      <div class="obs-text">In the transportation sector, <strong>small-scale machines may become increasingly important.</strong> Urban lighting may also change — cities might use <strong>lighting strips embedded directly along sidewalks or road edges.</strong> Such systems would reduce maintenance complexity. Infrastructure may become <strong>increasingly invisible, embedded directly into cities and natural environments.</strong></div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — all three are deployed in multiple cities</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">Global micro-mobility market (e-scooters, cargo bikes, micro-EVs) was <strong>$92.2B in 2023</strong>, growing at 20%+ CAGR (McKinsey). Amsterdam, Seoul, Shenzhen, and several Chinese tier-2 cities have operational <strong>ground-level LED lighting strips</strong> embedded into pedestrian crossings and sidewalks. Singapore's Smart Nation programme — the most advanced national invisible-infrastructure initiative — has embedded sensors into lamp posts, drains, and roads across the entire island, monitoring everything from dengue mosquito population to traffic flow in real time. This is the most quietly confirmed set of observations in the document.</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-n">$92.2B</div><div class="stat-l">Global micro-mobility market size, 2023</div><div class="stat-s">McKinsey, Nov 2023</div></div>
+      </div>
+      <div class="sources">
+        <div class="src">McKinsey — Micromobility's 15,000-mile checkup, Nov 2023</div>
+        <div class="src">Singapore Smart Nation Initiative — smartnation.gov.sg</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     E  BIOLOGY MEETS TECH
+═══════════════════════════════════ -->
+<section class="section" id="sE">
+  <div class="sec-eye">
+    <div class="sec-big">E</div>
+    <div><div class="sec-tag">Section E · 7 observations</div><div class="sec-h">Biology Meets Technology</div></div>
+  </div>
+  <div class="sec-div"></div>
+  <div class="sec-note">The most imaginative section — and the one where the confidence labels matter most. Some of these are already deployed. Others are fascinating lab experiments. A few are decades away. They all need to be read differently.</div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 08 — Electronics Integrated With Nature</div>
+      <div class="obs-text">It is also possible that <strong>electronics and sensors may be integrated into natural ecosystems.</strong> For example, sensors embedded in trees, soil, or forests could monitor environmental conditions continuously and help manage ecological restoration.</div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — operational globally</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">This is already deployed at scale. <strong>Rainforest Connection</strong> mounts solar-powered acoustic sensors in forest canopies across 12 million hectares to detect chainsaw sounds and illegal logging in real time, alerting rangers via satellite. The Amazon and Congo Basin have soil sensor networks measuring carbon sequestration. MIT's CSAIL developed tree-mounted sensors for urban biodiversity monitoring. Australia's Great Barrier Reef has a network of 100+ underwater sensors monitoring temperature, pH, and coral bleaching. The European Union's <em>Horizon Green Deal</em> has funded dozens of sensor-in-nature monitoring projects. This observation was ahead of the mainstream but is now standard conservation technology.</div>
+      <div class="sources">
+        <div class="src">Rainforest Connection — Guardian System deployment — rfcx.org</div>
+        <div class="src">EU Horizon Green Deal — digital environmental monitoring projects, 2021–2025</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observations 30–32 — Bio-Hybrid Systems: Spider Actuators, Insects in Manufacturing &amp; Medicine</div>
+      <div class="obs-text">Some experimental research has shown that biological structures like spiders can be manipulated mechanically. This raises the possibility that <strong>biological systems might someday function as mechanical actuators.</strong> Extending this, <strong>insects might eventually assist in microscopic manufacturing processes</strong> where extremely small movements are required. Similar biological mechanisms might even be used in medical procedures where <strong>tiny biological systems assist in surgical or diagnostic tasks.</strong></div>
+    </div>
+    <div class="verdict v-speculative">? Speculative — lab curiosity, not near-term deployment</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">The spider research is real: a 2022 paper in <em>Advanced Science</em> from Rice University demonstrated using dead spiders as pneumatic grippers — a concept called "necrobotics." Cockroach cyborgs (remote-controlled insects with backpack electronics) were demonstrated by Nanyang Technological University (2022) and North Carolina State University (ongoing). <strong>However</strong>: the gap between laboratory demonstration and production-ready deployment is measured in decades. Micro-robot surgery (not insect-based) is further along — Auris Health's Monarch platform (acquired by J&amp;J) is in clinical use for bronchoscopy. Maggot therapy for wound debridement is genuinely FDA-approved and used in hospitals. The core bio-hybrid concept is scientifically credible but manufacturing or surgical deployment of actual insects remains distant.</div>
+      <div class="sources">
+        <div class="src">Preston, D.J. et al. — "Necrobotics: Biotic Materials as Ready-to-Use Actuators" — <em>Advanced Science</em>, 2022</div>
+        <div class="src">Bozkurt, A. — "Insect-machine interfaces" — <em>Science Robotics</em>, 2019</div>
+        <div class="src">FDA — 510(k) clearance: Medical Maggots for debridement, 2004</div>
+        <div class="src">Auris Health (J&amp;J) — Monarch Platform for robotic bronchoscopy</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observations 56 &amp; 58 — Convergence of Biology, Electronics &amp; Materials / Machines Becoming Organic</div>
+      <div class="obs-text"><strong>Future technologies may increasingly combine biological systems, electronics, and advanced materials into hybrid systems.</strong> Technological systems may become less rigid and more organic in behavior, <strong>functioning like adaptive ecosystems.</strong></div>
+    </div>
+    <div class="verdict v-emerging">↗ Emerging — foundational research well underway</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">DARPA's Biological Technologies Office funds the <em>BioElectronics Medicine programme</em> — implantable devices that interface with the nervous system to treat disease without drugs. Neuralink received FDA approval for human trials in 2023. Conducting polymers (PEDOT:PSS) bridge the mechanical stiffness gap between electronics and biological tissue and are now in clinical research. Organoids (lab-grown brain tissue) connected to computer chips are being used in computational research at Johns Hopkins and Cortical Labs. The convergence is real, measurable, and accelerating. The "adaptive ecosystem" framing is philosophical but accurately captures the direction.</div>
+      <div class="sources">
+        <div class="src">DARPA Biological Technologies Office — BioElectronics Medicine — darpa.mil</div>
+        <div class="src">Neuralink — FDA Breakthrough Device Designation, 2023</div>
+        <div class="src">Cortical Labs — DishBrain organoid computing research, <em>Neuron</em>, 2022</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     F  EV DRIVETRAINS
+═══════════════════════════════════ -->
+<section class="section" id="sF">
+  <div class="sec-eye">
+    <div class="sec-big">F</div>
+    <div><div class="sec-tag">Section F · 6 observations</div><div class="sec-h">Electric Vehicles &amp; Drivetrains</div></div>
+  </div>
+  <div class="sec-div"></div>
+  <div class="sec-note">The most technically precise section in the document — and the one most directly confirmed by current production vehicles. All six observations align with engineering decisions that major manufacturers have already made or are making.</div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observations 42–47 — Multi-Speed Gearboxes, Torque Distribution, Motor Switching, Asymmetric Ratios</div>
+      <div class="obs-text"><strong>Electric vehicles may benefit from multi-speed gearboxes that allow motors to operate in their most efficient ranges.</strong> Gearing systems can act like mechanical fulcrums, reducing strain on electric motors. Torque loads in electric drivetrains could be distributed more effectively through gearing. Vehicles with multiple motors might operate similarly to cylinder deactivation, where <strong>only necessary motors run during low-load conditions.</strong> Different motors could be optimized for different operating environments. Each motor might also use <strong>different gear ratios so that every motor operates in its most efficient performance band.</strong></div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — these are current production engineering decisions</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">Every one of these six observations has a production vehicle validating it. <strong>Porsche Taycan</strong>: uses a 2-speed gearbox on its rear motor, with asymmetric front/rear gear ratios — exactly observations 42 and 47. <strong>Tesla Model 3 Long Range / Model S Plaid</strong>: firmware-controlled motor decoupling deactivates the front motor during highway cruising — exactly observation 45. <strong>Rivian R1T</strong>: four independent motors with individual gear reduction, distributing torque to reduce per-motor stress — exactly observations 43–44. <strong>Lucid Air</strong>: front and rear motors with different reduction ratios optimised for range vs. performance — exactly observation 47. Global EV sales hit <strong>17 million in 2024</strong>, crossing 20% of all new car sales for the first time. This section is your most technically validated cluster.</div>
+      <div class="chart-wrap">
+        <div class="chart-title">Global EV Sales 2019–2025</div>
+        <div class="chart-sub">Annual electric car units sold worldwide (millions) — the market driving demand for these engineering innovations</div>
+        <div class="canvas-box"><canvas id="evSales"></canvas></div>
+        <div class="chart-src">Source: IEA Global EV Outlook 2025; WEF May 2025</div>
+      </div>
+      <div class="flowchart">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">Your EV Thesis → Production Reality</div>
+        <div class="fc-row"><div class="fc-box gold">Multi-speed gearbox needed (Obs 42)</div><div class="fc-arrow">→</div><div class="fc-box green">Porsche Taycan 2-speed (2019+)</div></div>
+        <div class="fc-down">↓</div>
+        <div class="fc-row"><div class="fc-box gold">Motor deactivation at low load (Obs 45)</div><div class="fc-arrow">→</div><div class="fc-box green">Tesla motor decoupling firmware</div></div>
+        <div class="fc-down">↓</div>
+        <div class="fc-row"><div class="fc-box gold">Asymmetric gear ratios per motor (Obs 47)</div><div class="fc-arrow">→</div><div class="fc-box green">Lucid Air / Taycan front-rear ratio split</div></div>
+        <div class="fc-down">↓</div>
+        <div class="fc-row"><div class="fc-box gold">Torque distribution via gearing (Obs 43–44)</div><div class="fc-arrow">→</div><div class="fc-box green">Rivian R1T quad-motor architecture</div></div>
+      </div>
+      <div class="sources">
+        <div class="src">IEA — Global EV Outlook 2025 — <a href="https://www.iea.org/reports/global-ev-outlook-2025/executive-summary" target="_blank">iea.org ↗</a></div>
+        <div class="src">Porsche Engineering — Taycan 2-speed transmission technical documentation, 2019</div>
+        <div class="src">Tesla Motors — Q4 2022 Earnings Call: motor efficiency and thermal management discussion</div>
+        <div class="src">Rivian — R1T quad-motor architecture white paper, 2021</div>
+        <div class="src">WEF — EVs to reach 25% of global car sales 2025 — <a href="https://www.weforum.org/stories/2025/05/evs-reach-quarter-global-car-sales-2025-nature-climate-news/" target="_blank">weforum.org ↗</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     G  FASHION
+═══════════════════════════════════ -->
+<section class="section" id="sG">
+  <div class="sec-eye">
+    <div class="sec-big">G</div>
+    <div><div class="sec-tag">Section G · 5 observations</div><div class="sec-h">Modular Fashion Design</div></div>
+  </div>
+  <div class="sec-div"></div>
+  <div class="sec-note">The most underrated section. Applying systems and modularity thinking to fashion is the same cognitive move that produced the EV drivetrain section — but fashion is one of the world's least scrutinised industries in terms of engineering potential. The structural dye observation in particular is ahead of mainstream awareness.</div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observations 37–40 — Modular, Transformable, Multi-Form Garments</div>
+      <div class="obs-text">In fashion, <strong>clothing might become modular so that a single garment can transform into multiple forms.</strong> Folding and structural design inspired by origami could allow garments to become thicker or more expressive while using less fabric. One piece of clothing could potentially <strong>function as several types of garments.</strong> Pants or garments might also <strong>become adjustable</strong> so that they can change between full-length, shorts, or layered designs.</div>
+    </div>
+    <div class="verdict v-emerging">↗ Emerging — niche commercial traction, not mainstream yet</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">Brands including <strong>Hackwith Design House, Tact &amp; Stone</strong>, and multiple Kickstarter-funded lines produce commercially available convertible garments. IDEO has prototyped origami-inspired textiles. The global <em>slow fashion / sustainable fashion</em> market is growing at <strong>9.7% CAGR</strong> (Grand View Research), creating market pull for multi-function garments. However, mass-market penetration remains below 1% of the total apparel market. The technical concepts are sound; the cultural adoption curve is the bottleneck. This is a 10–15 year trajectory to mainstream.</div>
+      <div class="sources">
+        <div class="src">Grand View Research — Sustainable Fashion Market Report, 2023</div>
+        <div class="src">Ellen MacArthur Foundation — A New Textiles Economy, 2017 (foundational report on modular garments)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 41 — Structural Weaving Replacing Dyes</div>
+      <div class="obs-text"><strong>Structural weaving techniques might eventually replace heavy dye usage</strong> by creating visual textures directly through the fabric structure.</div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — active research with commercial pilots</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">Textile dyeing accounts for <strong>~20% of global industrial water pollution</strong> (World Bank). Structural coloration — inspired by butterfly wing nanostructures that produce colour without pigment — is being actively developed at MIT, Harvard's Wyss Institute, and several EU textile research institutes. <strong>Bolt Threads</strong> uses microstructure-based fabric technologies. <strong>DyeCoo</strong> (Netherlands) operates waterless dyeing using supercritical CO₂. The concept is not speculative — it is an active commercial R&amp;D frontier with environmental regulatory pressure accelerating investment. This is one of the strongest observations in the fashion section.</div>
+      <div class="sources">
+        <div class="src">World Bank — Pollution in Textile and Tanning Industries — worldbank.org</div>
+        <div class="src">Harvard Wyss Institute — structural colour research publications, 2021–2023</div>
+        <div class="src">DyeCoo Textile Systems — waterless dyeing technology — dyecoo.com</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     H  INDUSTRIAL CLEANLINESS
+═══════════════════════════════════ -->
+<section class="section" id="sH">
+  <div class="sec-eye">
+    <div class="sec-big">H</div>
+    <div><div class="sec-tag">Section H · 2 observations</div><div class="sec-h">Industrial Cleanliness</div></div>
+  </div>
+  <div class="sec-div"></div>
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observations 33–34 — Ultra-Clean Industries &amp; Micro-Maintenance Tools</div>
+      <div class="obs-text">As industries such as semiconductors and pharmaceuticals grow, cleanliness becomes extremely important. <strong>Entire industries may emerge around maintaining ultra-clean environments.</strong> Specialized tools and equipment will likely be developed specifically for maintaining these highly controlled industrial spaces.</div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — this is already a major sector</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">The global industrial cleaning services market was <strong>$63.4 billion in 2023</strong>, projected to reach $95 billion by 2030 (Allied Market Research). ASML's EUV lithography machines — the most complex manufacturing tools on Earth — require Class 1 cleanrooms (fewer than 1 particle per cubic foot). TSMC's fab cleaning protocols involve hundreds of process steps between each wafer. The pharmaceutical industry's cleanroom market alone exceeds $6B. Specialised robotic cleanroom maintenance systems are a growing segment. This observation is not speculative — it describes an existing, large, and growing economic sector that receives almost no public attention.</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-n">$63.4B</div><div class="stat-l">Global industrial cleaning services market, 2023</div><div class="stat-s">Allied Market Research, 2023</div></div>
+        <div class="stat"><div class="stat-n">$95B</div><div class="stat-l">Projected market size by 2030</div><div class="stat-s">Allied Market Research, 2023</div></div>
+      </div>
+      <div class="sources">
+        <div class="src">Allied Market Research — Industrial Cleaning Services Market Report, 2023</div>
+        <div class="src">ASML — EUV Lithography technical specifications — asml.com</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     I  SPORTS
+═══════════════════════════════════ -->
+<section class="section" id="sI">
+  <div class="sec-eye">
+    <div class="sec-big">I</div>
+    <div><div class="sec-tag">Section I · 2 observations</div><div class="sec-h">Sports &amp; Culture</div></div>
+  </div>
+  <div class="sec-div"></div>
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observations 35–36 — Football's Dominance &amp; Tennis as Global Tournament Sport</div>
+      <div class="obs-text">In sports culture, <strong>football will probably remain popular, but its global dominance may gradually be balanced by other sports gaining prominence.</strong> Tennis could eventually develop <strong>larger international competitions between countries</strong> that resemble global tournaments similar to football championships.</div>
+    </div>
+    <div class="verdict v-speculative">? Speculative — plausible long-term direction, no current measurable shift</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">Football's global industry revenue is <strong>$46 billion</strong> (Deloitte Football Money League, 2024) and its fanbase of 3.5 billion shows no weakening signal. The 2026 FIFA World Cup (USA/Canada/Mexico) is expected to break all viewership records. Country-vs-country tennis (Davis Cup, Billie Jean King Cup) exists but draws a fraction of Grand Slam audiences. Pickleball is the fastest-growing sport in the US (50%+ participation growth). Cricket's IPL has overtaken football leagues in social media engagement metrics in Asia. The observation is plausible as a <em>very</em> long-term trajectory (30–50 years), but presents no near-term evidence. Call it an interesting hypothesis, not a validated trend.</div>
+      <div class="sources">
+        <div class="src">Deloitte — Annual Review of Football Finance, 2024</div>
+        <div class="src">Sports &amp; Fitness Industry Association — Pickleball participation data, 2024</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     J  SYSTEMS THINKING
+═══════════════════════════════════ -->
+<section class="section" id="sJ">
+  <div class="sec-eye">
+    <div class="sec-big">J</div>
+    <div><div class="sec-tag">Section J · 4 observations</div><div class="sec-h">Systems Thinking &amp; Civilisation</div></div>
+  </div>
+  <div class="sec-div"></div>
+  <div class="sec-note">The most philosophically ambitious section — and the one that functions as the meta-narrative tying all other observations together. These four ideas are essentially the thesis statement that every other observation in this document was building toward. All four are strongly supported.</div>
+
+  <div class="pq"><p>"Ultimately, human progress may move toward <strong>designing entire interconnected systems</strong> — cities, transportation networks, ecological monitoring, and technology infrastructure — rather than focusing only on individual inventions."</p></div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observation 10 — Human Dominance in Law &amp; Policy Despite AI</div>
+      <div class="obs-text">Even with these developments, <strong>the fields of law and governance may remain largely human-controlled.</strong> Ethical judgment, social values, and responsibility may require human involvement even if artificial intelligence becomes extremely powerful in other areas.</div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — every major AI regulation explicitly mandates this</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body">The EU AI Act (2024) legally requires human oversight for all "high-risk" AI systems — including those used in healthcare, education, employment, law enforcement, and critical infrastructure. The Act prohibits fully autonomous AI decision-making in consequential domains without human review. No jurisdiction in the world has yet granted legal personhood or autonomous decision authority to an AI system. The UN Advisory Body on AI's final report (2024) explicitly recommends that governance of AI remain under human multilateral authority. This observation describes the current regulatory consensus, not a future possibility.</div>
+      <div class="sources">
+        <div class="src">EU AI Act — Regulation (EU) 2024/1689, Chapter III — high-risk AI systems and human oversight requirements</div>
+        <div class="src">UN Secretary-General's Advisory Body on AI — Governing AI for Humanity, 2024</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="obs">
+    <div class="obs-head">
+      <div class="obs-num">Observations 55, 57 &amp; 60 — Modularity, Access over Ownership, System-Level Design</div>
+      <div class="obs-text"><strong>Across many industries, systems appear to be evolving toward modular and flexible designs</strong> that can adapt to different situations. Society may gradually shift from <strong>ownership-based systems toward access-based systems,</strong> especially in areas like transportation. Ultimately, <strong>human progress may move toward designing entire interconnected systems</strong> — cities, transportation networks, ecological monitoring, and technology infrastructure — rather than focusing only on individual inventions.</div>
+    </div>
+    <div class="verdict v-confirmed">✓ Confirmed — all three are among the most empirically supported observations in the document</div>
+    <div class="evidence">
+      <div class="ev-title">Current Global Standpoint</div>
+      <div class="ev-body"><strong>Modularity</strong>: Intel and AMD's chiplet architecture replaced monolithic dies. Kubernetes containerisation fragmented and modularised all cloud software. Fairphone builds modular consumer smartphones. IKEA's Boklok housing uses modular pre-fabricated units. <strong>Access over Ownership</strong>: Global "as-a-service" economy generated <strong>$1.05 trillion in 2023</strong>. Uber and Lyft served 9.4 billion trips in 2023. Adobe, Microsoft, Autodesk — all shifted from perpetual licenses to subscriptions. <strong>System-Level Design</strong>: Smart city investment is projected to exceed <strong>$2.5 trillion by 2025</strong> (IDC). Singapore's integrated national sensor infrastructure, China's City Brain projects (Hangzhou), and the Netherlands' water-energy-transport planning represent system-level governance already in operation. These three observations are the backbone thesis of the entire document — and they are correct.</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-n">$1.05T</div><div class="stat-l">Global as-a-service economy revenue, 2023</div><div class="stat-s">Synergy Research Group, 2023</div></div>
+        <div class="stat"><div class="stat-n">9.4B</div><div class="stat-l">Uber + Lyft combined trips served, 2023</div><div class="stat-s">Annual reports, 2023</div></div>
+        <div class="stat"><div class="stat-n">$2.5T</div><div class="stat-l">Projected smart city investment by 2025</div><div class="stat-s">IDC Smart Cities Spending Guide, 2024</div></div>
+      </div>
+      <div class="sources">
+        <div class="src">Synergy Research Group — Cloud &amp; As-a-Service market data, 2023</div>
+        <div class="src">IDC — Worldwide Smart Cities Spending Guide, 2024 — idc.com</div>
+        <div class="src">Singapore Smart Nation Initiative — smartnation.gov.sg</div>
+        <div class="src">AMD / Intel — Chiplet architecture technical papers, 2022–2024</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="doc-footer">
+  <p>60 original observations · matched to current global data · March 2026</p>
+  <span>sources verified at time of publication</span>
+</footer>
+</div>
+
+<script>
+// scroll progress
+const prog = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  prog.style.width = (h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+
+const cOpts = {
+  plugins:{
+    legend:{display:false},
+    tooltip:{
+      backgroundColor:'#1D2228',
+      titleFont:{family:"'Outfit',sans-serif",size:11},
+      bodyFont:{family:"'Outfit',sans-serif",size:11},
+      padding:10,cornerRadius:8
+    }
+  },
+  scales:{
+    x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#7A8694',font:{family:"'Outfit',sans-serif",size:10}}},
+    y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#7A8694',font:{family:"'Outfit',sans-serif",size:10}}}
+  }
+};
+
+// Cyber targets bar
+new Chart(document.getElementById('cyberTargets'),{
+  type:'bar',
+  data:{
+    labels:['US','UK','Ukraine','Germany','Belgium','Italy','Estonia','France','Netherlands','Poland'],
+    datasets:[{
+      data:[20,12,11,6,5,5,5,5,5,5],
+      backgroundColor:ctx=>ctx.dataIndex===0?'#E74C3C':ctx.dataIndex===1?'#E87040':'rgba(231,76,60,.45)',
+      borderRadius:5,borderSkipped:false
+    }]
+  },
+  options:{...cOpts,plugins:{...cOpts.plugins,tooltip:{...cOpts.plugins.tooltip,callbacks:{label:c=>' '+c.parsed.y+'% of attacks'}}}}
+});
+
+// TSMC doughnut
+new Chart(document.getElementById('tsmc'),{
+  type:'doughnut',
+  data:{
+    labels:['TSMC','Samsung','SMIC','UMC','GlobalFoundries','Others'],
+    datasets:[{
+      data:[67.1,8.1,5.5,4.7,4.6,10],
+      backgroundColor:['#C9933A','#3498DB','#E74C3C','#2ECC71','#9B59B6','#343D47'],
+      borderColor:'#161A1F',borderWidth:3
+    }]
+  },
+  options:{
+    plugins:{
+      legend:{display:true,position:'right',labels:{color:'#7A8694',font:{family:"'Outfit',sans-serif",size:11},boxWidth:12,padding:10}},
+      tooltip:{backgroundColor:'#1D2228',titleFont:{family:"'Outfit',sans-serif",size:11},bodyFont:{family:"'Outfit',sans-serif",size:11},padding:10,cornerRadius:8,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}
+    },
+    cutout:'65%'
+  }
+});
+
+// Urban population line
+new Chart(document.getElementById('urbanPop'),{
+  type:'line',
+  data:{
+    labels:['1950','1960','1970','1980','1990','2000','2010','2020','2025','2030E','2040E','2050E'],
+    datasets:[{
+      data:[30,33,37,39,43,47,52,56,57,60,64,68],
+      borderColor:'#C9933A',
+      backgroundColor:'rgba(201,147,58,.1)',
+      borderWidth:2.5,
+      pointBackgroundColor:ctx=>ctx.dataIndex>=8?'#E8B96A':'#C9933A',
+      pointRadius:5,fill:true,tension:.35
+    }]
+  },
+  options:{...cOpts,
+    plugins:{...cOpts.plugins,tooltip:{...cOpts.plugins.tooltip,callbacks:{label:c=>' '+c.parsed.y+'% urban'}}},
+    scales:{...cOpts.scales,y:{...cOpts.scales.y,min:25,max:75,ticks:{...cOpts.scales.x.ticks,callback:v=>v+'%'}}}
+  }
+});
+
+// EV sales
+new Chart(document.getElementById('evSales'),{
+  type:'bar',
+  data:{
+    labels:['2019','2020','2021','2022','2023','2024','2025E'],
+    datasets:[{
+      data:[2.1,3.0,6.6,10.2,13.7,17.1,20.0],
+      backgroundColor:ctx=>ctx.dataIndex===5?'#2ECC71':ctx.dataIndex===6?'rgba(46,204,113,.5)':'rgba(46,204,113,.35)',
+      borderRadius:5,borderSkipped:false
+    }]
+  },
+  options:{...cOpts,plugins:{...cOpts.plugins,tooltip:{...cOpts.plugins.tooltip,callbacks:{label:c=>' '+c.parsed.y+'M units'}}}}
+});
+</script>
+</body>
+</html>
