@@ -133,25 +133,140 @@ body{font-family:var(--sans);background:var(--ink);color:var(--text);font-size:1
 .pq p strong{font-style:normal;font-weight:700;color:var(--gold-l);}
 
 /* footer */
-.doc-footer{margin-top:80px;padding-top:28px;border-top:1px solid var(--faint);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-.doc-footer p,.doc-footer span{font-size:12px;color:var(--faint);font-family:var(--mono);}
+.doc-footer{margin-top:80px;padding-top:32px;border-top:1px solid var(--faint);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.doc-footer span{font-size:12px;color:var(--faint);font-family:var(--mono);}
+.author-block{display:flex;flex-direction:column;gap:4px;}
+.author-name{font-family:var(--serif);font-size:28px;font-weight:700;color:var(--white);letter-spacing:-.01em;line-height:1;}
+.author-note{font-size:13px;color:#7A90A8;font-style:italic;}
+
+/* ── ANALOG CLOCK PANEL ── */
+.clock-panel{
+  position:fixed;top:20px;right:24px;z-index:900;
+  background:rgba(22,27,35,.92);
+  border:1px solid var(--faint);
+  border-radius:16px;
+  padding:16px 20px;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  text-align:center;
+  box-shadow:0 8px 32px rgba(0,0,0,.45);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+#analogClock{display:block;}
+.clock-date{
+  font-family:var(--mono);
+  font-size:10px;
+  color:#7A90A8;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  line-height:1.5;
+  text-align:center;
+}
+.clock-tz{
+  font-size:9px;
+  color:var(--faint);
+  font-style:italic;
+}
+
+/* ── NEWS TICKER ── */
+.ticker-bar{
+  background:var(--s1);
+  border-bottom:1px solid var(--faint);
+  border-top:1px solid var(--faint);
+  padding:9px 0;
+  overflow:hidden;
+  position:relative;
+}
+.ticker-bar::before{
+  content:'LIVE';
+  position:absolute;left:0;top:0;bottom:0;
+  background:var(--gold);color:var(--ink);
+  font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;
+  padding:0 14px;display:flex;align-items:center;z-index:2;
+}
+.ticker-bar::after{
+  content:'';position:absolute;right:0;top:0;bottom:0;
+  width:60px;background:linear-gradient(90deg,transparent,var(--s1));z-index:2;
+}
+.ticker-track{
+  display:flex;gap:0;padding-left:80px;
+  animation:ticker 80s linear infinite;white-space:nowrap;
+}
+.ticker-track:hover{animation-play-state:paused;}
+@keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+.ticker-item{display:inline-flex;align-items:center;gap:10px;padding:0 44px 0 0;font-size:13px;color:#B8C4D4;}
+.ticker-item a{color:#B8C4D4;text-decoration:none;transition:color .15s;}
+.ticker-item a:hover{color:var(--gold-l);}
+.ticker-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:.6;flex-shrink:0;}
+.ticker-src{font-family:var(--mono);font-size:10px;color:var(--gold);margin-right:4px;opacity:.8;}
+.ticker-loading{padding:4px 0 4px 80px;font-size:13px;color:var(--faint);font-style:italic;}
+
+/* ── LIVE INTELLIGENCE PANEL ── */
+.intel-panel{
+  background:var(--s1);border:1px solid var(--faint);border-radius:14px;
+  padding:24px 28px;margin-bottom:48px;
+}
+.intel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.intel-title{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);}
+.intel-sub{font-size:13px;color:var(--muted);font-style:italic;}
+.intel-refresh{font-family:var(--mono);font-size:10px;color:var(--faint);cursor:pointer;border:1px solid var(--faint);border-radius:6px;padding:4px 10px;background:none;color:#7A90A8;transition:all .15s;}
+.intel-refresh:hover{border-color:var(--gold-line);color:var(--gold);}
+.intel-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.intel-card{background:var(--s2);border:1px solid var(--faint);border-radius:10px;padding:14px 16px;transition:border-color .2s;}
+.intel-card:hover{border-color:var(--gold-line);}
+.intel-card-tag{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;}
+.sec-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;padding:2px 8px;border-radius:4px;text-transform:uppercase;}
+.sec-badge.sA{background:rgba(231,76,60,.15);color:#F05252;}
+.sec-badge.sB{background:rgba(77,163,232,.15);color:#4DA3E8;}
+.sec-badge.sC{background:rgba(245,166,35,.15);color:#F5A623;}
+.sec-badge.sD{background:rgba(61,219,126,.15);color:#3DDB7E;}
+.sec-badge.sE{background:rgba(155,89,182,.15);color:#BB8ADB;}
+.sec-badge.sF{background:rgba(52,219,180,.15);color:#34DBB4;}
+.sec-badge.sG{background:rgba(232,185,106,.15);color:#E8B96A;}
+.sec-badge.sH{background:rgba(149,165,166,.15);color:#95A5A6;}
+.sec-badge.sI{background:rgba(230,126,34,.15);color:#E6812A;}
+.sec-badge.sJ{background:rgba(201,147,58,.15);color:#D4A044;}
+.intel-src-badge{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.06em;}
+.intel-headline{font-size:13.5px;color:#C8D4E4;line-height:1.55;font-weight:400;}
+.intel-headline a{color:#C8D4E4;text-decoration:none;transition:color .15s;}
+.intel-headline a:hover{color:var(--gold-l);}
+.intel-empty{font-size:13px;color:var(--faint);font-style:italic;padding:12px 0;text-align:center;grid-column:1/-1;}
+.intel-loading{font-size:13px;color:var(--faint);font-style:italic;padding:20px 0;text-align:center;grid-column:1/-1;}
+@media(max-width:700px){
+  .intel-grid{grid-template-columns:1fr;}
+  .clock-panel{top:auto;bottom:16px;right:16px;}
+}
 
 @page{size:A4;margin:10mm 8mm;}
 @media print{
   body{background:#0A0C0F;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   .obs,.chart-wrap,.stats{page-break-inside:avoid;break-inside:avoid;}
-  .progress,.toc{display:none;}
+  .progress,.toc,.clock-panel,.ticker-bar,.intel-panel{display:none;}
 }
 </style>
 </head>
 <body>
 <div class="progress" id="prog"></div>
+
+<!-- ── ANALOG CLOCK ── -->
+<div class="clock-panel" id="clockPanel">
+  <canvas id="analogClock" width="110" height="110"></canvas>
+  <div class="clock-date" id="clockDate">Loading...</div>
+  <div class="clock-tz" id="clockTz"></div>
+</div>
+
+<!-- ── LIVE NEWS TICKER ── -->
+<div class="ticker-bar" id="tickerBar">
+  <div class="ticker-loading" id="tickerLoading">Fetching live headlines...</div>
+  <div class="ticker-track" id="tickerTrack" style="display:none;"></div>
+</div>
+
 <div class="page">
 
 <header class="hero">
   <div class="hero-kicker">Original Notes · Reality Check · March 2026</div>
-  <h1>Your Observations<br>vs. <em>The World Right Now</em></h1>
-  <p class="hero-desc">Every original observation, exactly as written — matched against current news, research papers, verified data, and real-world trends to show what's confirmed, what's emerging, and what's still speculative.</p>
+  <h1>Observations<br>vs. <em>The World</em></h1>
+  <p class="hero-desc">The world moves fast. These observations — made without the benefit of a research desk or a newsroom — still manage to land close to what's actually unfolding. This is an honest look at how general thinking stacks up against what's happening right now, across technology, power, cities, and the systems quietly reshaping everything.</p>
   <div class="hero-legend">
     <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Confirmed — happening now</div>
     <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Emerging — early signals</div>
@@ -159,6 +274,20 @@ body{font-family:var(--sans);background:var(--ink);color:var(--text);font-size:1
     <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Speculative — limited evidence</div>
   </div>
 </header>
+
+<!-- ── LIVE INTELLIGENCE PANEL ── -->
+<div class="intel-panel" id="intelPanel">
+  <div class="intel-header">
+    <div>
+      <div class="intel-title">Live Intelligence — Headlines Mapped to Observations</div>
+      <div class="intel-sub">Pulling from NYT · The Guardian · Times of India · BBC · Reuters</div>
+    </div>
+    <button class="intel-refresh" onclick="loadIntel()">↻ Refresh</button>
+  </div>
+  <div class="intel-grid" id="intelGrid">
+    <div class="intel-loading">Connecting to news sources...</div>
+  </div>
+</div>
 
 <!-- TOC -->
 <nav class="toc">
@@ -888,28 +1017,288 @@ body{font-family:var(--sans);background:var(--ink);color:var(--text);font-size:1
 </section>
 
 <footer class="doc-footer">
-  <p>60 original observations · matched to current global data · March 2026</p>
-  <span>sources verified at time of publication</span>
+  <div class="author-block">
+    <div class="author-name">Pb</div>
+    <div class="author-note">Thoughts are partially mine — the world filled in the rest.</div>
+  </div>
+  <span>60 observations · 10 sections · March 2026</span>
 </footer>
 </div>
 
 <script>
-// scroll progress
+// ── SCROLL PROGRESS ──────────────────────────────────────
 const prog = document.getElementById('prog');
 window.addEventListener('scroll', () => {
   const h = document.documentElement;
   prog.style.width = (h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
 });
 
+// ── ANALOG CLOCK ─────────────────────────────────────────
+const canvas = document.getElementById('analogClock');
+const ctx2 = canvas.getContext('2d');
+const R = canvas.width / 2;
+
+function drawClock() {
+  const now = new Date();
+  const s = now.getSeconds() + now.getMilliseconds()/1000;
+  const m = now.getMinutes() + s/60;
+  const h = (now.getHours() % 12) + m/60;
+
+  ctx2.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Face
+  ctx2.beginPath();
+  ctx2.arc(R, R, R-2, 0, Math.PI*2);
+  ctx2.fillStyle = '#1A1F28';
+  ctx2.fill();
+  ctx2.strokeStyle = '#3E4A58';
+  ctx2.lineWidth = 1.5;
+  ctx2.stroke();
+
+  // Outer gold ring
+  ctx2.beginPath();
+  ctx2.arc(R, R, R-4, 0, Math.PI*2);
+  ctx2.strokeStyle = 'rgba(212,160,68,.35)';
+  ctx2.lineWidth = 1;
+  ctx2.stroke();
+
+  // Hour markers
+  for (let i = 0; i < 12; i++) {
+    const angle = (i / 12) * Math.PI * 2 - Math.PI/2;
+    const isMajor = i % 3 === 0;
+    const inner = R - (isMajor ? 16 : 11);
+    const outer = R - 6;
+    ctx2.beginPath();
+    ctx2.moveTo(R + Math.cos(angle)*inner, R + Math.sin(angle)*inner);
+    ctx2.lineTo(R + Math.cos(angle)*outer, R + Math.sin(angle)*outer);
+    ctx2.strokeStyle = isMajor ? 'rgba(212,160,68,.9)' : 'rgba(212,160,68,.4)';
+    ctx2.lineWidth = isMajor ? 2 : 1;
+    ctx2.stroke();
+  }
+
+  // Minute markers (60)
+  for (let i = 0; i < 60; i++) {
+    if (i % 5 === 0) continue;
+    const angle = (i / 60) * Math.PI * 2 - Math.PI/2;
+    ctx2.beginPath();
+    ctx2.moveTo(R + Math.cos(angle)*(R-8), R + Math.sin(angle)*(R-8));
+    ctx2.lineTo(R + Math.cos(angle)*(R-6), R + Math.sin(angle)*(R-6));
+    ctx2.strokeStyle = 'rgba(255,255,255,.12)';
+    ctx2.lineWidth = 1;
+    ctx2.stroke();
+  }
+
+  // Hour hand
+  drawHand(ctx2, R, (h/12)*Math.PI*2 - Math.PI/2, R*0.48, 3, '#FFFFFF');
+  // Minute hand
+  drawHand(ctx2, R, (m/60)*Math.PI*2 - Math.PI/2, R*0.66, 2, '#E8EDF5');
+  // Second hand
+  drawHand(ctx2, R, (s/60)*Math.PI*2 - Math.PI/2, R*0.70, 1, '#D4A044');
+  // Back tail for second hand
+  drawHand(ctx2, R, (s/60)*Math.PI*2 - Math.PI/2 + Math.PI, R*0.15, 1, '#D4A044');
+
+  // Centre dot
+  ctx2.beginPath();
+  ctx2.arc(R, R, 4, 0, Math.PI*2);
+  ctx2.fillStyle = '#D4A044';
+  ctx2.fill();
+  ctx2.beginPath();
+  ctx2.arc(R, R, 2, 0, Math.PI*2);
+  ctx2.fillStyle = '#FFFFFF';
+  ctx2.fill();
+
+  // Date label
+  const days   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const d = now;
+  document.getElementById('clockDate').textContent =
+    `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+  const off = -d.getTimezoneOffset();
+  const sign = off >= 0 ? '+' : '-';
+  const oh = String(Math.floor(Math.abs(off)/60)).padStart(2,'0');
+  const om = String(Math.abs(off)%60).padStart(2,'0');
+  document.getElementById('clockTz').textContent = `${tz} UTC${sign}${oh}:${om}`;
+
+  requestAnimationFrame(drawClock);
+}
+
+function drawHand(ctx, r, angle, length, width, color) {
+  ctx.beginPath();
+  ctx.moveTo(r, r);
+  ctx.lineTo(r + Math.cos(angle)*length, r + Math.sin(angle)*length);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+}
+
+drawClock();
+
+// ── SECTION KEYWORD MAP ──────────────────────────────────
+const SECTION_MAP = [
+  { id:'sA', label:'A', name:'Geopolitics',
+    keys:['russia','china','taiwan','nato','ukraine','india','japan','military','geopolit',
+          'defense','defence','cyber','hack','war','conflict','sanction','nuclear','missile',
+          'kremlin','pentagon','xi jinping','putin','beijing','moscow','superpower','spy',
+          'espionage','intelligence','arms','weapon','diplomacy','alliance'] },
+  { id:'sB', label:'B', name:'Semiconductors & AI',
+    keys:['chip','semiconductor','artificial intelligence',' ai ','quantum','compute','silicon',
+          'nvidia','tsmc','intel','amd','data center','microchip','processor','foundry',
+          'machine learning','deep learning','gpu','large language','chatgpt','openai',
+          'anthropic','gemini','compute cluster','training run','inference'] },
+  { id:'sC', label:'C', name:'Materials & Resources',
+    keys:['battery','lithium','cobalt','mining','mineral','material','sand','resource',
+          'rare earth','copper','nickel','graphite','supply chain','critical mineral',
+          'extraction','refin','ore','sustainable mining'] },
+  { id:'sD', label:'D', name:'Urban & Mobility',
+    keys:['city','urban','transport','mobility','metro','subway','tunnel','infrastructure',
+          'traffic','drone','logistics','smart city','housing','congestion','public transit',
+          'pedestrian','autonomous vehicle','self-driving','micro','scooter','robot delivery'] },
+  { id:'sE', label:'E', name:'Biology & Tech',
+    keys:['biotech','genetic','neural','brain','robot','biology','medical device','implant',
+          'sensor network','ecosystem','crispr','gene','neuroscience','bionics','prosthetic',
+          'organoid','synth','bioelectron','neuralink','brain-computer'] },
+  { id:'sF', label:'F', name:'Electric Vehicles',
+    keys:['electric vehicle','ev ','tesla','byd','drivetrain','motor','charging','ev sales',
+          'battery range','electr','hybrid','plug-in','zero emission','electric car',
+          'porsche taycan','rivian','lucid','gm ultium','volvo electric'] },
+  { id:'sG', label:'G', name:'Fashion & Textiles',
+    keys:['fashion','textile','clothing','fabric','apparel','garment','sustainable fashion',
+          'dye','weaving','modular fashion','fast fashion','luxury brand','couture','wear'] },
+  { id:'sH', label:'H', name:'Industrial Cleanliness',
+    keys:['cleanroom','pharmaceutical','semiconductor fab','clean manufacturing','asml',
+          'contamination','sterile','gmp','quality control','precision manufacturing'] },
+  { id:'sI', label:'I', name:'Sports & Culture',
+    keys:['football','soccer','tennis','sport','fifa','olympics','cricket','athletics',
+          'world cup','wimbledon','premier league','f1','formula 1','pickleball','nba'] },
+  { id:'sJ', label:'J', name:'Systems & Governance',
+    keys:['climate','governance','policy','regulation','smart city','ai regulation','system',
+          'modular','access economy','subscription','gig economy','platform','net zero',
+          'carbon','sustainability','circular','as-a-service','sharing economy','global order'] }
+];
+
+function matchSections(text) {
+  const lower = text.toLowerCase();
+  const matched = [];
+  for (const sec of SECTION_MAP) {
+    if (sec.keys.some(k => lower.includes(k))) {
+      matched.push(sec);
+    }
+  }
+  return matched.slice(0, 2); // max 2 tags per headline
+}
+
+// ── NEWS SOURCES ─────────────────────────────────────────
+const NEWS_FEEDS = [
+  { name:'NYT', url:'https://rss.nytimes.com/services/xml/rss/nyt/World.xml' },
+  { name:'NYT Tech', url:'https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml' },
+  { name:'Guardian', url:'https://www.theguardian.com/world/rss' },
+  { name:'Guardian Tech', url:'https://www.theguardian.com/technology/rss' },
+  { name:'TOI', url:'https://timesofindia.indiatimes.com/rssfeedstopstories.cms' },
+  { name:'BBC', url:'https://feeds.bbci.co.uk/news/world/rss.xml' },
+  { name:'BBC Tech', url:'https://feeds.bbci.co.uk/news/technology/rss.xml' },
+  { name:'Reuters', url:'https://feeds.reuters.com/reuters/worldNews' }
+];
+
+async function fetchRSS(feed) {
+  const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(feed.url)}`;
+  try {
+    const res = await fetch(proxy, { signal: AbortSignal.timeout(6000) });
+    const data = await res.json();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(data.contents, 'text/xml');
+    const items = [...doc.querySelectorAll('item')].slice(0, 10);
+    return items.map(item => ({
+      title: item.querySelector('title')?.textContent?.trim() || '',
+      link:  item.querySelector('link')?.textContent?.trim() || '#',
+      source: feed.name
+    })).filter(i => i.title.length > 10);
+  } catch(e) {
+    return [];
+  }
+}
+
+async function loadIntel() {
+  const grid = document.getElementById('intelGrid');
+  grid.innerHTML = '<div class="intel-loading">Connecting to news sources...</div>';
+
+  // Fetch feeds in parallel
+  const results = await Promise.all(NEWS_FEEDS.map(f => fetchRSS(f)));
+  const all = results.flat();
+
+  // Filter to only headlines that match at least one section
+  const matched = [];
+  for (const item of all) {
+    const secs = matchSections(item.title);
+    if (secs.length > 0) {
+      matched.push({ ...item, sections: secs });
+    }
+  }
+
+  // Deduplicate by similar title
+  const seen = new Set();
+  const unique = matched.filter(item => {
+    const key = item.title.slice(0, 40).toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  // Shuffle and take top 12
+  const display = unique.sort(() => Math.random() - 0.5).slice(0, 12);
+
+  // Build ticker (all matched headlines)
+  const tickerItems = unique.slice(0, 30);
+  buildTicker(tickerItems);
+
+  if (display.length === 0) {
+    grid.innerHTML = '<div class="intel-empty">No matching headlines found right now — try refreshing in a moment.</div>';
+    return;
+  }
+
+  grid.innerHTML = display.map(item => `
+    <div class="intel-card">
+      <div class="intel-card-tag">
+        ${item.sections.map(s =>
+          `<span class="sec-badge s${s.label}" title="${s.name}">§${s.label} · ${s.name}</span>`
+        ).join('')}
+        <span class="intel-src-badge">${item.source}</span>
+      </div>
+      <div class="intel-headline">
+        <a href="${item.link}" target="_blank" rel="noopener">${item.title}</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+function buildTicker(items) {
+  if (items.length === 0) return;
+  const track = document.getElementById('tickerTrack');
+  const doubled = [...items, ...items];
+  track.innerHTML = doubled.map(item => `
+    <span class="ticker-item">
+      <span class="ticker-dot"></span>
+      <a href="${item.link}" target="_blank" rel="noopener">
+        <span class="ticker-src">${item.source}</span>${item.title}
+      </a>
+    </span>
+  `).join('');
+  track.style.display = 'flex';
+  document.getElementById('tickerLoading').style.display = 'none';
+}
+
+// Load on page open
+loadIntel();
+
+// ── CHARTS ───────────────────────────────────────────────
 const cOpts = {
   plugins:{
     legend:{display:false},
-    tooltip:{
-      backgroundColor:'#1D2228',
+    tooltip:{backgroundColor:'#1D2228',
       titleFont:{family:"'Outfit',sans-serif",size:11},
-      bodyFont:{family:"'Outfit',sans-serif",size:11},
-      padding:10,cornerRadius:8
-    }
+      bodyFont:{family:"'Outfit',sans-serif",size:11},padding:10,cornerRadius:8}
   },
   scales:{
     x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#7A8694',font:{family:"'Outfit',sans-serif",size:10}}},
@@ -917,72 +1306,58 @@ const cOpts = {
   }
 };
 
-// Cyber targets bar
 new Chart(document.getElementById('cyberTargets'),{
   type:'bar',
   data:{
     labels:['US','UK','Ukraine','Germany','Belgium','Italy','Estonia','France','Netherlands','Poland'],
-    datasets:[{
-      data:[20,12,11,6,5,5,5,5,5,5],
-      backgroundColor:ctx=>ctx.dataIndex===0?'#E74C3C':ctx.dataIndex===1?'#E87040':'rgba(231,76,60,.45)',
-      borderRadius:5,borderSkipped:false
-    }]
+    datasets:[{data:[20,12,11,6,5,5,5,5,5,5],
+      backgroundColor:ctx=>ctx.dataIndex===0?'#F05252':ctx.dataIndex===1?'#E87040':'rgba(240,82,82,.4)',
+      borderRadius:5,borderSkipped:false}]
   },
-  options:{...cOpts,plugins:{...cOpts.plugins,tooltip:{...cOpts.plugins.tooltip,callbacks:{label:c=>' '+c.parsed.y+'% of attacks'}}}}
+  options:{...cOpts,plugins:{...cOpts.plugins,tooltip:{...cOpts.plugins.tooltip,
+    callbacks:{label:c=>' '+c.parsed.y+'% of attacks'}}}}
 });
 
-// TSMC doughnut
 new Chart(document.getElementById('tsmc'),{
   type:'doughnut',
   data:{
     labels:['TSMC','Samsung','SMIC','UMC','GlobalFoundries','Others'],
-    datasets:[{
-      data:[67.1,8.1,5.5,4.7,4.6,10],
-      backgroundColor:['#C9933A','#3498DB','#E74C3C','#2ECC71','#9B59B6','#343D47'],
-      borderColor:'#161A1F',borderWidth:3
-    }]
+    datasets:[{data:[67.1,8.1,5.5,4.7,4.6,10],
+      backgroundColor:['#D4A044','#4DA3E8','#F05252','#3DDB7E','#BB8ADB','#3E4A58'],
+      borderColor:'#161A1F',borderWidth:3}]
   },
-  options:{
-    plugins:{
-      legend:{display:true,position:'right',labels:{color:'#7A8694',font:{family:"'Outfit',sans-serif",size:11},boxWidth:12,padding:10}},
-      tooltip:{backgroundColor:'#1D2228',titleFont:{family:"'Outfit',sans-serif",size:11},bodyFont:{family:"'Outfit',sans-serif",size:11},padding:10,cornerRadius:8,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}
-    },
-    cutout:'65%'
-  }
+  options:{plugins:{
+    legend:{display:true,position:'right',labels:{color:'#7A8694',
+      font:{family:"'Outfit',sans-serif",size:11},boxWidth:12,padding:10}},
+    tooltip:{backgroundColor:'#1D2228',titleFont:{family:"'Outfit',sans-serif",size:11},
+      bodyFont:{family:"'Outfit',sans-serif",size:11},padding:10,cornerRadius:8,
+      callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}},cutout:'65%'}
 });
 
-// Urban population line
 new Chart(document.getElementById('urbanPop'),{
   type:'line',
   data:{
     labels:['1950','1960','1970','1980','1990','2000','2010','2020','2025','2030E','2040E','2050E'],
-    datasets:[{
-      data:[30,33,37,39,43,47,52,56,57,60,64,68],
-      borderColor:'#C9933A',
-      backgroundColor:'rgba(201,147,58,.1)',
-      borderWidth:2.5,
-      pointBackgroundColor:ctx=>ctx.dataIndex>=8?'#E8B96A':'#C9933A',
-      pointRadius:5,fill:true,tension:.35
-    }]
+    datasets:[{data:[30,33,37,39,43,47,52,56,57,60,64,68],
+      borderColor:'#D4A044',backgroundColor:'rgba(212,160,68,.1)',borderWidth:2.5,
+      pointBackgroundColor:ctx=>ctx.dataIndex>=8?'#EEC472':'#D4A044',
+      pointRadius:5,fill:true,tension:.35}]
   },
   options:{...cOpts,
     plugins:{...cOpts.plugins,tooltip:{...cOpts.plugins.tooltip,callbacks:{label:c=>' '+c.parsed.y+'% urban'}}},
-    scales:{...cOpts.scales,y:{...cOpts.scales.y,min:25,max:75,ticks:{...cOpts.scales.x.ticks,callback:v=>v+'%'}}}
-  }
+    scales:{...cOpts.scales,y:{...cOpts.scales.y,min:25,max:75,ticks:{callback:v=>v+'%',color:'#7A8694'}}}}
 });
 
-// EV sales
 new Chart(document.getElementById('evSales'),{
   type:'bar',
   data:{
     labels:['2019','2020','2021','2022','2023','2024','2025E'],
-    datasets:[{
-      data:[2.1,3.0,6.6,10.2,13.7,17.1,20.0],
-      backgroundColor:ctx=>ctx.dataIndex===5?'#2ECC71':ctx.dataIndex===6?'rgba(46,204,113,.5)':'rgba(46,204,113,.35)',
-      borderRadius:5,borderSkipped:false
-    }]
+    datasets:[{data:[2.1,3.0,6.6,10.2,13.7,17.1,20.0],
+      backgroundColor:ctx=>ctx.dataIndex===5?'#3DDB7E':ctx.dataIndex===6?'rgba(61,219,126,.5)':'rgba(61,219,126,.32)',
+      borderRadius:5,borderSkipped:false}]
   },
-  options:{...cOpts,plugins:{...cOpts.plugins,tooltip:{...cOpts.plugins.tooltip,callbacks:{label:c=>' '+c.parsed.y+'M units'}}}}
+  options:{...cOpts,plugins:{...cOpts.plugins,tooltip:{...cOpts.plugins.tooltip,
+    callbacks:{label:c=>' '+c.parsed.y+'M units'}}}}
 });
 </script>
 </body>
