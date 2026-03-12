@@ -1,1242 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Original Notes — Reality Check</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root{
-  --gold:#D4A044;
-  --gold-l:#EEC472;
-  --gold-dim:rgba(212,160,68,.12);
-  --gold-line:rgba(212,160,68,.38);
-
-  --ink:#07111F;
-  --s1:#0B1830;
-  --s2:#10213F;
-  --s3:#13284A;
-
-  --text:#EEF4FF;
-  --muted:#B8C6E3;
-  --faint:#2A4675;
-  --white:#FFFFFF;
-
-  --green:#57E092;
-  --green-bg:rgba(87,224,146,.12);
-  --red:#FF6B6B;
-  --red-bg:rgba(255,107,107,.12);
-  --amber:#F5B642;
-  --amber-bg:rgba(245,182,66,.12);
-  --blue:#68B4FF;
-  --blue-bg:rgba(104,180,255,.12);
-  --violet:#BB8ADB;
-  --violet-bg:rgba(187,138,219,.12);
-
-  --serif:'Cormorant Garamond', Georgia, serif;
-  --sans:'Outfit', system-ui, sans-serif;
-  --mono:'DM Mono', monospace;
+  --gold:#d4a044; --gold-l:#eec472; --gold-d:rgba(212,160,68,.12); --gold-line:rgba(212,160,68,.35);
+  --ink:#07111f; --s1:#0b1830; --s2:#10213f; --s3:#13284a;
+  --text:#eef4ff; --muted:#b8c6e3; --faint:#28466f; --white:#ffffff;
+  --green:#57e092; --green-bg:rgba(87,224,146,.12);
+  --blue:#7bbcff; --blue-bg:rgba(123,188,255,.12);
+  --amber:#f5b642; --amber-bg:rgba(245,182,66,.12);
+  --red:#ff6b6b; --red-bg:rgba(255,107,107,.12);
+  --violet:#bb8adb; --violet-bg:rgba(187,138,219,.12);
+  --serif:'Cormorant Garamond', Georgia, serif; --sans:'Outfit', system-ui, sans-serif; --mono:'DM Mono', monospace;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{
-  font-family:var(--sans);
-  background:linear-gradient(180deg,#05101d 0%, #07111F 100%);
-  color:var(--text);
-  font-size:19px;
-  line-height:1.86;
-}
-.page{max-width:1040px;margin:0 auto;padding:0 44px 100px;}
-.progress{
-  position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--blue));
-  z-index:999;width:0%;transition:width .1s;
-}
-.hero{padding:96px 0 58px;border-bottom:1px solid var(--faint);margin-bottom:58px;position:relative;}
-.hero::after{content:'';position:absolute;bottom:-1px;left:0;width:92px;height:3px;background:linear-gradient(90deg,var(--gold),var(--blue));}
-.hero-kicker{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:26px;display:flex;align-items:center;gap:12px;}
-.hero-kicker::before{content:'';display:inline-block;width:34px;height:1px;background:var(--gold);}
-.hero h1{font-family:var(--serif);font-size:clamp(56px,6.6vw,84px);font-weight:700;line-height:1.05;letter-spacing:-.015em;color:var(--white);margin-bottom:24px;}
-.hero h1 em{font-style:italic;color:#8FC4FF;font-weight:300;}
-.hero-desc{font-size:21px;color:var(--muted);max-width:760px;line-height:1.8;margin-bottom:36px;font-weight:300;}
-.hero-legend{display:flex;flex-wrap:wrap;gap:18px 22px;}
-.legend-item{display:flex;align-items:center;gap:9px;font-size:16px;color:var(--muted);}
-.legend-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
-
-.toc{background:linear-gradient(180deg,var(--s1),var(--s2));border:1px solid var(--faint);border-radius:16px;padding:30px 34px;margin-bottom:64px;box-shadow:0 10px 28px rgba(0,0,0,.18);}
-.toc-label{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;}
-.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 34px;}
-.toc-a{display:flex;align-items:baseline;gap:10px;text-decoration:none;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);transition:border-color .15s, transform .15s;}
-.toc-a:hover{border-bottom-color:var(--gold-line);transform:translateX(3px);}
-.toc-let{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--gold);width:24px;flex-shrink:0;}
-.toc-name{font-size:16px;color:var(--muted);transition:color .15s;}
-.toc-a:hover .toc-name{color:var(--text);}
-.toc-ct{margin-left:auto;font-family:var(--mono);font-size:12px;color:#6C86B0;}
-
-.section{margin-bottom:90px;scroll-margin-top:32px;}
-.sec-eye{display:flex;align-items:flex-start;gap:20px;margin-bottom:20px;}
-.sec-big{font-family:var(--serif);font-size:82px;font-weight:700;line-height:1;color:#28466F;flex-shrink:0;}
-.sec-tag{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:7px;}
-.sec-h{font-family:var(--serif);font-size:38px;font-weight:700;color:var(--white);line-height:1.2;}
-.sec-div{width:100%;height:1px;background:linear-gradient(90deg,var(--gold) 0%,var(--faint) 26%,transparent 100%);margin-bottom:30px;}
-.sec-note{background:linear-gradient(180deg,var(--s1),var(--s2));border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:17px 20px;margin-bottom:28px;font-size:17px;color:var(--muted);font-style:italic;line-height:1.8;}
-
-.obs{background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--faint);border-radius:16px;overflow:hidden;margin-bottom:18px;box-shadow:0 10px 26px rgba(0,0,0,.14);}
-.obs-head{padding:24px 28px 18px;}
-.obs-num{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
-.obs-text{font-size:18px;color:var(--text);line-height:1.9;font-weight:300;}
-.obs-text strong{font-weight:600;color:var(--white);}
-
-.verdict{display:flex;align-items:center;gap:10px;padding:12px 28px;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-top:1px solid var(--faint);}
-.verdict.v-confirmed{background:var(--green-bg);color:var(--green);}
-.verdict.v-partial{background:var(--amber-bg);color:var(--amber);}
-.verdict.v-speculative{background:var(--red-bg);color:var(--red);}
-.verdict.v-emerging{background:var(--blue-bg);color:var(--blue);}
-.verdict.v-framework{background:var(--violet-bg);color:var(--violet);}
-
-.evidence{padding:24px 28px;background:linear-gradient(180deg,var(--s3),var(--s2));border-top:1px solid var(--faint);}
-.ev-title{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
-.ev-body{font-size:16px;color:#B8C8DF;line-height:1.82;margin-bottom:16px;}
-.ev-body strong{color:#F2F7FF;font-weight:600;}
-.ev-body em{color:#8FC4FF;font-style:normal;}
-
-.stats{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:16px;}
-.stat{background:rgba(255,255,255,.03);border:1px solid var(--faint);border-radius:12px;padding:15px 18px;flex:1;min-width:148px;}
-.stat-n{font-family:var(--serif);font-size:32px;font-weight:700;color:var(--white);line-height:1;margin-bottom:5px;}
-.stat-l{font-size:14px;color:#BDD0E8;line-height:1.5;}
-.stat-s{font-size:11px;color:#8097B7;margin-top:5px;font-style:italic;}
-
-.chart-wrap{background:rgba(255,255,255,.03);border:1px solid var(--faint);border-radius:12px;padding:22px 24px;margin-bottom:14px;}
-.chart-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:5px;}
-.chart-sub{font-size:12px;color:var(--muted);margin-bottom:16px;}
-.canvas-box{position:relative;height:240px;}
-.chart-src{font-size:12px;color:#8097B7;font-style:italic;margin-top:10px;}
-
-.sources{margin-top:16px;display:flex;flex-direction:column;gap:0;border-top:1px solid rgba(255,255,255,.08);padding-top:14px;}
-.src{font-size:14px;color:#C6D3E4;padding:8px 0 8px 18px;position:relative;line-height:1.7;border-bottom:1px solid rgba(255,255,255,.05);}
-.src:last-child{border-bottom:none;}
-.src::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--gold);opacity:.75;}
-.src a{color:#7EC7FF;text-decoration:none;font-weight:500;border-bottom:1px solid rgba(126,199,255,.3);padding-bottom:1px;transition:color .15s,border-color .15s;}
-.src a:hover{color:#A8DAFF;border-bottom-color:rgba(168,218,255,.6);}
-
-.flowchart{display:flex;flex-direction:column;gap:0;margin:14px 0;}
-.fc-row{display:flex;align-items:center;gap:0;}
-.fc-box{background:rgba(255,255,255,.03);border:1px solid var(--faint);border-radius:8px;padding:12px 18px;font-size:13px;color:var(--text);text-align:center;flex:1;}
-.fc-box.gold{border-color:var(--gold-line);background:var(--gold-dim);color:var(--gold-l);}
-.fc-box.green{border-color:rgba(87,224,146,.3);background:var(--green-bg);color:var(--green);}
-.fc-box.red{border-color:rgba(255,107,107,.3);background:var(--red-bg);color:var(--red);}
-.fc-arrow{font-size:18px;color:#55709A;padding:0 10px;flex-shrink:0;}
-.fc-down{text-align:center;color:#55709A;font-size:20px;line-height:1;padding:4px 0;}
-
-.pq{margin:6px 0 16px;padding:0 0 0 22px;border-left:3px solid var(--gold);}
-.pq p{font-family:var(--serif);font-size:25px;font-style:italic;font-weight:300;color:var(--text);line-height:1.58;}
-.pq p strong{font-style:normal;font-weight:700;color:#A8DAFF;}
-
-.doc-footer{margin-top:82px;padding-top:34px;border-top:1px solid var(--faint);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
-.doc-footer span{font-size:12px;color:#8097B7;font-family:var(--mono);}
-.author-block{display:flex;flex-direction:column;gap:4px;}
-.author-name{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--white);letter-spacing:-.01em;line-height:1;}
-.author-note{font-size:13px;color:#8EA3C0;font-style:italic;}
-
-.clock-panel{
-  position:fixed;top:20px;right:24px;z-index:900;
-  background:rgba(10,19,36,.94);
-  border:1px solid var(--faint);
-  border-radius:18px;
-  padding:16px 18px 14px;
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
-  text-align:center;
-  box-shadow:0 8px 32px rgba(0,0,0,.45);
-  display:flex;flex-direction:column;align-items:center;gap:10px;
-  min-width:160px;
-}
-.clock-date{font-family:var(--mono);font-size:10px;color:#91A6C3;text-transform:uppercase;letter-spacing:.1em;line-height:1.5;text-align:center;}
-.clock-tz{font-size:9px;color:#607B9C;font-style:italic;}
-.clock-digital{font-family:var(--mono);font-size:18px;color:var(--white);letter-spacing:.08em;margin-top:-2px;}
-.clock-toggle{
-  background:transparent;border:1px solid var(--faint);color:#AFC1DB;border-radius:8px;
-  padding:5px 10px;font-size:11px;font-family:var(--mono);cursor:pointer;transition:all .15s;
-}
-.clock-toggle:hover{border-color:var(--gold-line);color:var(--gold-l);}
-
-.ticker-bar{background:var(--s1);border-bottom:1px solid var(--faint);border-top:1px solid var(--faint);padding:9px 0;overflow:hidden;position:relative;}
-.ticker-bar::before{
-  content:'LIVE';position:absolute;left:0;top:0;bottom:0;
-  background:linear-gradient(180deg,var(--gold),#f0bb66);color:var(--ink);
-  font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;
-  padding:0 14px;display:flex;align-items:center;z-index:2;
-}
-.ticker-bar::after{
-  content:'';position:absolute;right:0;top:0;bottom:0;
-  width:60px;background:linear-gradient(90deg,transparent,var(--s1));z-index:2;
-}
-.ticker-track{display:flex;gap:0;padding-left:80px;animation:ticker 80s linear infinite;white-space:nowrap;}
-.ticker-track:hover{animation-play-state:paused;}
-@keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-.ticker-item{display:inline-flex;align-items:center;gap:10px;padding:0 44px 0 0;font-size:14px;color:#C5D2E3;}
-.ticker-item a{color:#C5D2E3;text-decoration:none;transition:color .15s;}
-.ticker-item a:hover{color:var(--gold-l);}
-.ticker-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:.7;flex-shrink:0;}
-.ticker-src{font-family:var(--mono);font-size:10px;color:var(--gold);margin-right:4px;opacity:.85;}
-.ticker-loading{padding:4px 0 4px 80px;font-size:13px;color:#6E89AD;font-style:italic;}
-
-.intel-panel{background:linear-gradient(180deg,var(--s1),var(--s2));border:1px solid var(--faint);border-radius:16px;padding:24px 28px;margin-bottom:48px;}
-.intel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
-.intel-title{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);}
-.intel-sub{font-size:13px;color:var(--muted);font-style:italic;}
-.intel-refresh{font-family:var(--mono);font-size:10px;cursor:pointer;border:1px solid var(--faint);border-radius:8px;padding:5px 10px;background:none;color:#8DA2BF;transition:all .15s;}
-.intel-refresh:hover{border-color:var(--gold-line);color:var(--gold);}
-.intel-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.intel-card{background:rgba(255,255,255,.03);border:1px solid var(--faint);border-radius:12px;padding:14px 16px;transition:border-color .2s, transform .15s;}
-.intel-card:hover{border-color:var(--gold-line);transform:translateY(-1px);}
-.intel-card-tag{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
-.sec-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;padding:2px 8px;border-radius:4px;text-transform:uppercase;}
-.sec-badge.sA{background:rgba(255,107,107,.15);color:#FF8E8E;}
-.sec-badge.sB{background:rgba(104,180,255,.15);color:#8AC8FF;}
-.sec-badge.sC{background:rgba(245,182,66,.15);color:#F5C66C;}
-.sec-badge.sD{background:rgba(87,224,146,.15);color:#7BE9AA;}
-.sec-badge.sE{background:rgba(187,138,219,.15);color:#D2A8F0;}
-.sec-badge.sF{background:rgba(52,219,180,.15);color:#7CE9D0;}
-.sec-badge.sG{background:rgba(232,185,106,.15);color:#F0C985;}
-.sec-badge.sH{background:rgba(149,165,166,.15);color:#C6D0D1;}
-.sec-badge.sI{background:rgba(230,126,34,.15);color:#F1A65C;}
-.sec-badge.sJ{background:rgba(212,160,68,.15);color:#E7BE74;}
-.sec-badge.sK{background:rgba(128,170,255,.15);color:#B3CBFF;}
-.sec-badge.sR{background:rgba(162,197,255,.15);color:#C7DBFF;}
-.intel-src-badge{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.06em;}
-.intel-headline{font-size:14px;color:#D1DCEF;line-height:1.6;font-weight:400;}
-.intel-headline a{color:#D1DCEF;text-decoration:none;transition:color .15s;}
-.intel-headline a:hover{color:var(--gold-l);}
-.intel-empty,.intel-loading{font-size:13px;color:#6F88AC;font-style:italic;padding:20px 0;text-align:center;grid-column:1/-1;}
-
-.section-note-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.mini-note{
-  background:rgba(255,255,255,.03);
-  border:1px solid var(--faint);
-  border-radius:12px;
-  padding:14px 16px;
-  font-size:15px;
-  color:#C6D3E6;
-  line-height:1.7;
-}
-
-@media(max-width:900px){
-  .page{padding:0 22px 90px;}
-  .toc-grid,.intel-grid,.section-note-grid{grid-template-columns:1fr;}
-  .clock-panel{top:auto;bottom:16px;right:16px;}
-}
-
-@page{size:A4;margin:10mm 8mm;}
-@media print{
-  body{background:#06101D;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:10.8pt;}
-  .obs,.chart-wrap,.stats,.mini-note{page-break-inside:avoid;break-inside:avoid;}
-  .progress,.toc,.clock-panel,.ticker-bar,.intel-panel{display:none;}
-  .box,.obs,.chart-wrap,.mini-note,.stat{box-shadow:none !important;}
-}
+*{box-sizing:border-box;margin:0;padding:0} html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:linear-gradient(180deg,#05101d 0%,#07111f 100%);color:var(--text);font-size:18px;line-height:1.84}
+.page{max-width:1080px;margin:0 auto;padding:0 26px 100px}
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--blue));z-index:999;width:0%;transition:width .1s}
+.topbar{position:sticky;top:0;z-index:900;background:rgba(7,17,31,.88);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
+.topin{max-width:1080px;margin:0 auto;padding:10px 26px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.topkicker{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.clockbox{text-align:right}.clock{font-family:var(--mono);font-size:16px}.date{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.hero{padding:70px 0 46px;border-bottom:1px solid var(--faint);margin-bottom:34px;position:relative}
+.hero::after{content:'';position:absolute;left:0;bottom:-1px;width:90px;height:3px;background:linear-gradient(90deg,var(--gold),var(--blue))}
+.hero-kicker{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:22px}
+.hero h1{font-family:var(--serif);font-size:clamp(46px,6vw,80px);line-height:1.03;margin-bottom:18px}.hero h1 em{font-style:italic;color:#8fc4ff;font-weight:400}
+.hero p{max-width:900px;color:var(--muted);font-size:20px}
+.legend{display:flex;flex-wrap:wrap;gap:16px 22px;margin-top:24px}.legend-item{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:15px}.dot{width:11px;height:11px;border-radius:50%}
+.toc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 28px;background:linear-gradient(180deg,var(--s1),var(--s2));border:1px solid var(--faint);border-radius:16px;padding:22px 24px;margin:22px 0 36px}
+.toc a{color:var(--muted);text-decoration:none;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}.toc a:hover{color:var(--text)}
+.note{background:linear-gradient(180deg,var(--s1),var(--s2));border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:16px 18px;color:var(--muted);margin-bottom:34px}
+.section{margin-bottom:64px;scroll-margin-top:80px}.sectionhead{display:flex;align-items:flex-start;gap:18px;margin-bottom:18px}.big{font-family:var(--serif);font-size:72px;line-height:1;color:#27466e}.tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}.section h2{font-family:var(--serif);font-size:38px;line-height:1.1}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--faint);border-radius:16px;overflow:hidden}.cardin{padding:22px 24px}.mini{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}.card h3{font-family:var(--serif);font-size:28px;line-height:1.1;margin-bottom:10px}.card p{color:var(--muted)}.list{margin-top:10px;padding-left:18px;color:#cdd7e8}.list li{margin:6px 0}
+.obs{background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--faint);border-radius:16px;overflow:hidden;margin-bottom:18px}.obshead{padding:24px 26px 16px}.obsnum{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}.obstext{font-size:18px;line-height:1.9}.obstext strong{color:#fff}
+.badge{display:flex;align-items:center;gap:8px;padding:11px 26px;border-top:1px solid var(--faint);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}.confirmed{background:var(--green-bg);color:var(--green)}.supported{background:var(--blue-bg);color:var(--blue)}.partial{background:var(--amber-bg);color:var(--amber)}.speculative{background:var(--red-bg);color:var(--red)}.framework{background:var(--violet-bg);color:var(--violet)}
+.body{padding:22px 26px;background:linear-gradient(180deg,var(--s3),var(--s2));border-top:1px solid var(--faint)}.label{font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}.body p{color:var(--muted);margin-bottom:12px}
+.timeline{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:16px 0}.tbox{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px}.tbox h4{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}.tbox p{font-size:15px;line-height:1.7;color:#c9d5e7}
+.stats{display:flex;flex-wrap:wrap;gap:14px;margin:16px 0}.stat{background:rgba(255,255,255,.03);border:1px solid var(--faint);border-radius:12px;padding:15px 18px;flex:1;min-width:150px}.stat-n{font-family:var(--serif);font-size:30px;line-height:1;color:#fff;margin-bottom:5px}.stat-l{font-size:14px;color:#bdd0e8}.stat-s{font-size:11px;color:#8097b7;margin-top:5px}
+.chart{background:rgba(255,255,255,.03);border:1px solid var(--faint);border-radius:12px;padding:20px 22px;margin:14px 0}.chart h4{font-size:16px;margin-bottom:4px}.chart p{font-size:12px;color:var(--muted);margin-bottom:12px}.canvasbox{height:240px;position:relative}
+.sources{margin-top:12px;border-top:1px solid rgba(255,255,255,.08);padding-top:12px;display:flex;flex-direction:column;gap:8px}.sources a{color:#8dd1ff;text-decoration:none}.sources a:hover{color:#bfe6ff}
+.footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--faint);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--muted)}.name{font-family:var(--serif);font-size:28px;color:#fff}
+@media(max-width:900px){.toc,.grid,.timeline{grid-template-columns:1fr}.big{font-size:58px}.section h2{font-size:32px}.hero p{font-size:18px}}
+@media print{.topbar{display:none}.card,.obs,.tbox,.chart,.stat{break-inside:avoid;page-break-inside:avoid}}
 </style>
 </head>
 <body>
 <div class="progress" id="prog"></div>
-
-<div class="clock-panel" id="clockPanel">
-  <div class="clock-digital" id="digitalClock">00:00:00</div>
-  <button class="clock-toggle" id="clockToggle">24H</button>
-  <div class="clock-date" id="clockDate">Loading...</div>
-  <div class="clock-tz" id="clockTz"></div>
-</div>
-
-<div class="ticker-bar" id="tickerBar">
-  <div class="ticker-loading" id="tickerLoading">Fetching live headlines...</div>
-  <div class="ticker-track" id="tickerTrack" style="display:none;"></div>
-</div>
-
+<div class="topbar"><div class="topin"><div class="topkicker">Final GitHub-ready hybrid build</div><div class="clockbox"><div class="clock" id="clock">00:00:00</div><div class="date" id="date">Loading...</div></div></div></div>
 <div class="page">
-
 <header class="hero">
-  <div class="hero-kicker">Original Notes · Reality Check · March 2026</div>
-  <h1>Observations<br>vs. <em>The World</em></h1>
-  <p class="hero-desc">The world moves fast. These observations — made without the benefit of a research desk or a newsroom — still manage to land close to what's actually unfolding. This is an honest look at how general thinking stacks up against what's happening right now, across technology, power, cities, and the systems quietly reshaping everything. These observations are not all equally certain: some are well supported by current data, some are trend-backed, and some remain structured hypotheses tested here against research, policy, and reporting.</p>
-  <div class="hero-legend">
-    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Confirmed — happening now</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Emerging — early signals</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Partially supported</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Speculative — limited evidence</div>
+  <div class="hero-kicker">Pb · Reality Check · March 2026</div>
+  <h1>Observations vs. <em>the world</em></h1>
+  <p>This final build keeps the old broad-section format, but mixes in the newer PDF-derived observations and gives the biggest claims fuller, cleaner wording plus verified voices across time. So this page works as both an atlas of your thinking and a more serious evidence-backed reality check.</p>
+  <div class="legend">
+    <div class="legend-item"><div class="dot" style="background:var(--green)"></div>Confirmed</div>
+    <div class="legend-item"><div class="dot" style="background:var(--blue)"></div>Strongly supported</div>
+    <div class="legend-item"><div class="dot" style="background:var(--amber)"></div>Partially supported</div>
+    <div class="legend-item"><div class="dot" style="background:var(--red)"></div>Speculative</div>
+    <div class="legend-item"><div class="dot" style="background:var(--violet)"></div>Framework with strong support</div>
   </div>
 </header>
 
-<div class="intel-panel" id="intelPanel">
-  <div class="intel-header">
-    <div>
-      <div class="intel-title">Live Intelligence — Headlines Mapped to Observations</div>
-      <div class="intel-sub">Pulling from NYT · The Guardian · Times of India · BBC · Reuters · prioritising electronics, transit, energy, and war-linked systems risk</div>
-    </div>
-    <button class="intel-refresh" onclick="loadIntel()">↻ Refresh</button>
-  </div>
-  <div class="intel-grid" id="intelGrid">
-    <div class="intel-loading">Connecting to news sources...</div>
-  </div>
-</div>
-
 <nav class="toc">
-  <div class="toc-label">Sections</div>
-  <div class="toc-grid">
-    <a href="#sA" class="toc-a"><span class="toc-let">A</span><span class="toc-name">Geopolitics &amp; Strategic Power</span><span class="toc-ct">10</span></a>
-    <a href="#sB" class="toc-a"><span class="toc-let">B</span><span class="toc-name">Semiconductors &amp; Computing</span><span class="toc-ct">6</span></a>
-    <a href="#sC" class="toc-a"><span class="toc-let">C</span><span class="toc-name">Materials &amp; Resources</span><span class="toc-ct">8</span></a>
-    <a href="#sD" class="toc-a"><span class="toc-let">D</span><span class="toc-name">Urban Infrastructure &amp; Mobility</span><span class="toc-ct">10</span></a>
-    <a href="#sE" class="toc-a"><span class="toc-let">E</span><span class="toc-name">Biology Meets Technology</span><span class="toc-ct">7</span></a>
-    <a href="#sF" class="toc-a"><span class="toc-let">F</span><span class="toc-name">Electric Vehicles &amp; Drivetrains</span><span class="toc-ct">6</span></a>
-    <a href="#sG" class="toc-a"><span class="toc-let">G</span><span class="toc-name">Modular Fashion Design</span><span class="toc-ct">5</span></a>
-    <a href="#sH" class="toc-a"><span class="toc-let">H</span><span class="toc-name">Industrial Cleanliness</span><span class="toc-ct">2</span></a>
-    <a href="#sI" class="toc-a"><span class="toc-let">I</span><span class="toc-name">Sports &amp; Culture</span><span class="toc-ct">2</span></a>
-    <a href="#sJ" class="toc-a"><span class="toc-let">J</span><span class="toc-name">Systems Thinking &amp; Civilisation</span><span class="toc-ct">4</span></a>
-    <a href="#sK" class="toc-a"><span class="toc-let">K</span><span class="toc-name">New Observations · Corridors, Transit &amp; War Systems</span><span class="toc-ct">10</span></a>
-    <a href="#sR" class="toc-a"><span class="toc-let">R</span><span class="toc-name">Meta Section &amp; Research Backbone</span><span class="toc-ct">2</span></a>
-  </div>
+  <a href="#atlas">Atlas map of the earlier observation set</a>
+  <a href="#deepdive">Major observation dossiers</a>
+  <a href="#pdfideas">New PDF-derived observations</a>
+  <a href="#charts">Charts and supporting visuals</a>
+  <a href="#backbone">Research backbone</a>
+  <a href="#footer">End notes</a>
 </nav>
 
-<section class="section" id="sA">
-  <div class="sec-eye">
-    <div class="sec-big">A</div>
-    <div><div class="sec-tag">Section A · 10 observations</div><div class="sec-h">Geopolitics &amp; Strategic Power</div></div>
-  </div>
-  <div class="sec-div"></div>
-  <div class="sec-note">The strongest opening cluster in the document. These observations move from individual country behaviours toward a thesis about how global power itself is being redefined — and events since 2022 have validated almost every point here.</div>
+<div class="note">Method: this page mixes two layers. The <strong>atlas layer</strong> preserves the breadth of your earlier observation map. The <strong>dossier layer</strong> rebuilds major observations using verified voices across time — news reporting, journals, official reports, policy texts, and public technical literature wherever the issue was meaningfully discussed. The <strong>PDF layer</strong> preserves the newer corridor / Bay of Bengal / transit / systems-disruption thinking in fuller form instead of sanding it into tiny cards.</div>
 
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 01 — Russia &amp; Cyber Power</div>
-      <div class="obs-text">One of the first observations concerns Russia and its global positioning. Instead of relying only on visible industrial output, <strong>Russia seems to be strongly associated with cyber capabilities, digital warfare, hacking, computation, and scientific research.</strong> The country appears to invest heavily in asymmetric technological capabilities that do not necessarily show up in consumer industries but still carry significant strategic power.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — strongly playing out</div>
-    <div class="evidence">
-      <div class="ev-title">Current Global Standpoint</div>
-      <div class="ev-body">This has moved from observation to documented operational reality. Russian cyberattacks on NATO member states surged <strong>25% in a single year</strong>, per Microsoft's Digital Defense Report 2025. GRU Unit 29155 — a dedicated cyber warfare unit — has been jointly named by the <em>FBI, CISA, NSA</em>, and Germany's BfV as responsible for attacks on critical infrastructure across 26+ NATO members. In October 2025, a cyberattack shut down check-in systems at London Heathrow, Berlin Brandenburg, and Brussels airports — attributed to Russian actors. NATO is now publicly debating when cyberattacks warrant military retaliation.</div>
-      <div class="stats">
-        <div class="stat"><div class="stat-n">+25%</div><div class="stat-l">Surge in Russian cyberattacks on NATO states, year-on-year</div><div class="stat-s">Microsoft Digital Defense Report, 2025</div></div>
-        <div class="stat"><div class="stat-n">26+</div><div class="stat-l">NATO members with confirmed domain scanning by GRU Unit 29155</div><div class="stat-s">CISA advisory trail</div></div>
-        <div class="stat"><div class="stat-n">20%</div><div class="stat-l">of Russian state cyber attacks targeted the United States</div><div class="stat-s">Microsoft / Euronews, Oct 2025</div></div>
-      </div>
-      <div class="chart-wrap">
-        <div class="chart-title">Russian State Cyberattack Targets by Country (2024–2025)</div>
-        <div class="chart-sub">Illustrative share of known Russian state cyber operations, %</div>
-        <div class="canvas-box"><canvas id="cyberTargets"></canvas></div>
-        <div class="chart-src">Source base: Microsoft Digital Defense Report 2025; public reporting summaries</div>
-      </div>
-      <div class="sources">
-        <div class="src">Microsoft Digital Defense Report 2025 — <a href="https://www.microsoft.com/en-us/corporate-responsibility/cybersecurity/microsoft-digital-defense-report-2025/" target="_blank">microsoft.com ↗</a></div>
-        <div class="src">Euronews summary of the 25% surge — <a href="https://www.euronews.com/next/2025/10/17/russian-cyberattacks-against-nato-members-up-25-in-a-year-analysis-shows" target="_blank">euronews.com ↗</a></div>
-        <div class="src">CSIS — Russia's Shadow War Against the West — <a href="https://www.csis.org/analysis/russias-shadow-war-against-west" target="_blank">csis.org ↗</a></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 02 — Japan's Robotics Shift</div>
-      <div class="obs-text">In earlier years, Japan was widely associated with developing humanoid robots, robotic animals, robot bees, and other futuristic mechanical systems. However, in recent years this public narrative seems to have slowed down. <strong>The focus might have shifted toward more practical mechanical industries, manufacturing, policy improvements, and human development</strong> rather than highly visible experimental robotics.</div>
-    </div>
-    <div class="verdict v-partial">~ Partially Supported</div>
-    <div class="evidence">
-      <div class="ev-title">Current Global Standpoint</div>
-      <div class="ev-body">This is accurate but needs nuance. Japan still dominates industrial robot production, but the public imagination around humanoids has shifted toward firms in the US and China. The better reading is that Japan did not abandon robotics — it re-centered around practical manufacturing, care, and industrial applications.</div>
-      <div class="sources">
-        <div class="src">International Federation of Robotics — World Robotics reporting</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 03 — Smaller Chinese Provinces Rising</div>
-      <div class="obs-text">There is also the possibility that <strong>smaller Chinese provinces may rise as powerful economic zones.</strong> While cities like Shenzhen and Shanghai already dominate global headlines, the next wave of economic growth could emerge from less well-known regions where new manufacturing ecosystems and supply chains are being developed.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — underway</div>
-    <div class="evidence">
-      <div class="ev-title">Current Global Standpoint</div>
-      <div class="ev-body">China's industrial geography has been widening inland for years. The stronger thesis is not simply “new provinces rising,” but that transportation access and corridor integration generate uneven but real economic gains across regions.</div>
-      <div class="sources">
-        <div class="src">Transport access and regional effects in China — <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304387820300171" target="_blank">Journal of Public Economics, 2020 ↗</a></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observations 04 &amp; 05 — Taiwan, Semiconductors &amp; Strategic Power</div>
-      <div class="obs-text"><strong>The Taiwan–China–United States tension seems to revolve strongly around semiconductor manufacturing capabilities.</strong> Taiwan's chip fabrication capacity gives it enormous strategic importance, and this technological dependency may be one of the core drivers behind geopolitical friction.<br><br>In a broader sense, <strong>global power might gradually shift away from nuclear dominance toward semiconductor dominance.</strong> Control over computing infrastructure, electronics manufacturing, and advanced chip fabrication could become more decisive than traditional military weapons alone.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — the defining geopolitical thesis of our decade</div>
-    <div class="evidence">
-      <div class="ev-title">Current Global Standpoint</div>
-      <div class="ev-body">The concentration of advanced chip manufacturing has made semiconductors a strategic choke point. Industrial subsidies, export controls, and fab diversification now behave like national-security policy rather than normal industrial policy.</div>
-      <div class="stats">
-        <div class="stat"><div class="stat-n">71%</div><div class="stat-l">TSMC share of global foundry revenue, Q2 2025</div><div class="stat-s">industry reporting</div></div>
-        <div class="stat"><div class="stat-n">$52B</div><div class="stat-l">US CHIPS Act direct subsidy scale</div><div class="stat-s">public law / public policy</div></div>
-      </div>
-      <div class="chart-wrap">
-        <div class="chart-title">Global Semiconductor Foundry Market Share</div>
-        <div class="chart-sub">Illustrative concentration in the foundry layer</div>
-        <div class="canvas-box"><canvas id="tsmc"></canvas></div>
-        <div class="chart-src">Source base: industry share reporting and public summaries</div>
-      </div>
-      <div class="sources">
-        <div class="src">Global semiconductor manufacturer revenue overview — <a href="https://www.fool.com/research/semiconductor-manufacturers-by-revenue/" target="_blank">fool.com ↗</a></div>
-        <div class="src">Semiconductor Industry Association — <a href="https://www.semiconductors.org" target="_blank">semiconductors.org ↗</a></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 06 — Policy Wars Over AI</div>
-      <div class="obs-text">Eventually this technological competition may lead to policy wars. <strong>Nations might begin debating the ethical and legal boundaries of artificial intelligence,</strong> the role of automation in governance, and how humanity should regulate systems that could become more intelligent than humans in certain domains.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — already in full swing</div>
-    <div class="evidence">
-      <div class="ev-title">Current Global Standpoint</div>
-      <div class="ev-body">The policy war is already here. The EU AI Act, national AI strategies, and international codes of conduct show that AI governance is now part of geopolitical competition, not just ethics seminars with nicer fonts.</div>
-      <div class="sources">
-        <div class="src">EU AI Act official text — <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng" target="_blank">eur-lex.europa.eu ↗</a></div>
-        <div class="src">EU human agency and oversight language — <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CONSIL:ST_7536_2024_INIT" target="_blank">Council text ↗</a></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observations 48–51 — India's Defense &amp; China's Infrastructure</div>
-      <div class="obs-text">In defense strategy, <strong>India sometimes appears to rely on purchasing advanced equipment rather than solving long-term research challenges domestically.</strong> Strengthening domestic research in aerospace, satellites, and advanced weapons could improve long-term national security. Strategic alliances and geographic positioning around coastal or island regions could also play an important role. <strong>Chinese infrastructure development near borders, including dams and transport systems, may gradually shift regional power balances.</strong></div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — with important nuance on India</div>
-    <div class="evidence">
-      <div class="ev-title">Current Global Standpoint</div>
-      <div class="ev-body">The durable pattern is a tension between stopgap procurement and slow domestic capability-building. The sharper version of this claim is not “imports bad,” but “imports buy time; they do not erase structural capacity gaps.”</div>
-    </div>
+<section class="section" id="atlas">
+  <div class="sectionhead"><div class="big">A</div><div><div class="tag">Atlas map</div><h2>The broader observation field from the earlier format</h2></div></div>
+  <div class="grid">
+    <div class="card"><div class="cardin"><div class="mini">Strategic power</div><h3>Geopolitics, cyber conflict, state competition</h3><p>This keeps the earlier set on Russia and asymmetric cyber power, Taiwan and semiconductors, AI policy conflict, India’s defense dependence vs long-run R&amp;D, and Chinese infrastructure pressure.</p><ul class="list"><li>Russia’s strategic shift to cyber power</li><li>Taiwan conflict driven by semiconductor dominance</li><li>Policy wars over AI and humanity</li><li>India’s reliance on short-term defense purchases</li><li>Need for stronger domestic defense R&amp;D</li></ul></div></div>
+    <div class="card"><div class="cardin"><div class="mini">Computation</div><h3>Semiconductors, interpreted systems, planetary sensing</h3><p>This keeps the earlier computing field: semiconductors as strategic assets, experimental computing, planet-scale sensor networks, quasi-living chip systems, and orbital or extreme compute ideas.</p><ul class="list"><li>Semiconductors as quasi-living systems</li><li>Planet-scale computational ecosystems</li><li>Interpreted programming / experimentation-driven computing</li><li>Orbital data centers</li></ul></div></div>
+    <div class="card"><div class="cardin"><div class="mini">Materials</div><h3>Mining, hybrid materials, oils, sand, resource logic</h3><p>This preserves your materials observations: sustainable mining for EV inputs, organic–inorganic hybrids, industrial lubricants, “super oils,” desert sand as structural or thermal medium, and extraction from massive low-density resources.</p></div></div>
+    <div class="card"><div class="cardin"><div class="mini">Cities and mobility</div><h3>Urban pressure, underground layers, invisible systems</h3><p>This holds the broader mobility logic: advanced urban planning, underground vehicular roads, modular transport pods, micro-transport machines, embedded lighting, and infrastructure becoming less visible but more integrated.</p></div></div>
+    <div class="card"><div class="cardin"><div class="mini">Biology and tech</div><h3>Ecosystems, bio-hybrids, organic machine behavior</h3><p>This preserves electronics integrated with nature, planetary sensing, insect or animal-assisted micro-systems, and the wider convergence of biological, electronic, and material systems.</p></div></div>
+    <div class="card"><div class="cardin"><div class="mini">Engineering and design</div><h3>EV drivetrains, transformable clothing, industrial cleanliness</h3><p>This keeps the narrower but still important technical clusters: EV gearbox and motor logic, transformable garments, structural dye alternatives, and ultra-clean industries as their own strategic sector.</p></div></div>
   </div>
 </section>
 
-<section class="section" id="sB">
-  <div class="sec-eye">
-    <div class="sec-big">B</div>
-    <div><div class="sec-tag">Section B · 6 observations</div><div class="sec-h">Semiconductors &amp; Computing</div></div>
-  </div>
-  <div class="sec-div"></div>
+<section class="section" id="deepdive">
+  <div class="sectionhead"><div class="big">B</div><div><div class="tag">Cross-time dossiers</div><h2>The major observations rebuilt in fuller form</h2></div></div>
 
   <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 07 — Semiconductors as Quasi-Living Systems</div>
-      <div class="obs-text">Looking further ahead, <strong>semiconductors might evolve beyond simple passive electronics.</strong> Future chips could potentially sense environmental changes, adjust their behavior, and even repair themselves, giving them characteristics that resemble biological systems.</div>
-    </div>
-    <div class="verdict v-emerging">↗ Emerging — real research, long horizon</div>
-    <div class="evidence">
-      <div class="ev-title">Current Global Standpoint</div>
-      <div class="ev-body">The closest current parallels are neuromorphic computing, adaptive architectures, and self-healing materials research. The broad direction is defensible; the timeline remains long and gloriously inconvenient.</div>
-    </div>
+    <div class="obshead"><div class="obsnum">Observation dossier 01</div><div class="obstext">Russia does not need to dominate visible consumer technology to remain dangerous or globally relevant. Its strength can sit in less visible but strategically potent layers: cyber intrusion, digital sabotage, intelligence-linked computation, scientific-military capability, and low-visibility asymmetry. In that sense, Russian power may show up less as industrial glamour and more as the capacity to interfere, destabilise, and impose costs through digital and hybrid means.</div></div>
+    <div class="badge confirmed">Confirmed</div>
+    <div class="body"><div class="label">Verified voices across time</div><div class="timeline"><div class="tbox"><h4>Earlier logic</h4><p>Cyber conflict literature already treated digital operations as a domain where asymmetry can matter even without matching conventional industrial weight.</p></div><div class="tbox"><h4>Middle phase</h4><p>Hybrid conflict analysis increasingly described how states combine military pressure, cyber tools, information operations, and deniable disruption.</p></div><div class="tbox"><h4>Current reality</h4><p>Microsoft’s 2025 threat reporting and CISA-linked advisories strongly support the idea that Russian leverage sits heavily in cyber and hybrid disruption layers.</p></div></div><div class="sources"><a href="https://www.microsoft.com/en-us/corporate-responsibility/cybersecurity/microsoft-digital-defense-report-2025/" target="_blank">Microsoft Digital Defense Report 2025</a><a href="https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/msc/documents/presentations/CSR/Microsoft-Digital-Defense-Report-2025.pdf" target="_blank">MDDR 2025 PDF</a><a href="https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-249a" target="_blank">CISA / FBI / NSA advisory</a><a href="https://www.csis.org/analysis/russias-shadow-war-against-west" target="_blank">CSIS — Russia’s Shadow War Against the West</a></div></div>
   </div>
 
   <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 09 — Planet-Scale Sensor Networks</div>
-      <div class="obs-text">Expanding this idea further, <strong>large networks of sensors distributed across the planet could function almost like a planetary nervous system,</strong> collecting environmental data and helping humanity better understand and stabilize ecological systems.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — partially deployed already</div>
-    <div class="evidence">
-      <div class="ev-title">Current Global Standpoint</div>
-      <div class="ev-body">Satellite systems, IoT growth, environmental sensor networks, and Earth-system monitoring all support the basic direction of this claim. The phrase is dramatic, but the architecture is already being assembled in pieces.</div>
-      <div class="sources">
-        <div class="src">Digital twins of the Earth — <a href="https://www.nature.com/articles/s43247-024-01626-x" target="_blank">Communications Earth &amp; Environment, 2024 ↗</a></div>
-      </div>
-    </div>
+    <div class="obshead"><div class="obsnum">Observation dossier 02</div><div class="obstext">The Taiwan conflict is not just about sovereignty or military signalling. It is also about where advanced computation is physically manufactured. Once semiconductors become the base layer for AI, defense systems, automation, communications, and state capacity, control over chip fabrication stops being a narrow economic issue and becomes a strategic struggle over who gets to build the hardware of modern power.</div></div>
+    <div class="badge confirmed">Confirmed</div>
+    <div class="body"><div class="label">Verified voices across time</div><div class="timeline"><div class="tbox"><h4>Structural logic</h4><p>Chokepoint and infrastructure literature long showed that concentrated production nodes generate leverage far beyond their visible size.</p></div><div class="tbox"><h4>Middle phase</h4><p>As advanced-node fabrication concentrated and export-control politics intensified, semiconductors became strategically legible as infrastructure rather than ordinary industry.</p></div><div class="tbox"><h4>Current reality</h4><p>Foundry concentration, AI-compute dependence, and subsidy races now make your claim strongly defensible.</p></div></div><div class="sources"><a href="https://www.semiconductors.org/" target="_blank">Semiconductor Industry Association</a><a href="https://www.fool.com/research/semiconductor-manufacturers-by-revenue/" target="_blank">Global semiconductor revenue overview</a><a href="https://semiwiki.com/forum/threads/tsmc-market-share-tops-67-in-q4-advisory-firm.22327/" target="_blank">TrendForce summary via SemiWiki</a></div></div>
   </div>
 
   <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 26 — Orbital Data Centers</div>
-      <div class="obs-text">In a more extreme idea, <strong>data centers might eventually be placed in orbit.</strong> Space-based infrastructure could reduce land usage and potentially offer new forms of communication synchronization.</div>
-    </div>
-    <div class="verdict v-emerging">↗ Emerging — funded research, significant barriers</div>
-    <div class="evidence">
-      <div class="ev-title">Current Global Standpoint</div>
-      <div class="ev-body">There is real feasibility interest here, but economics, thermal control, and orbital complexity still say “not so fast, cowboy.” The observation survives as a long-horizon concept, not a near-term deployment claim.</div>
-    </div>
+    <div class="obshead"><div class="obsnum">Observation dossier 03</div><div class="obstext">As technological competition sharpens around AI and computation, the world is likely to move into policy conflict over what AI is allowed to do, who governs it, where moral authority remains, and whether law can ever be fully delegated to systems that outthink humans in narrow domains. Even if AI grows more capable, law and governance may still remain primarily human-controlled because responsibility and moral judgment cannot be cleanly outsourced without generating new risk.</div></div>
+    <div class="badge confirmed">Confirmed</div>
+    <div class="body"><div class="label">Verified voices across time</div><div class="timeline"><div class="tbox"><h4>Early discussion</h4><p>Governance concern around advanced automation existed for years, though early debate stayed more ethical than enforceable.</p></div><div class="tbox"><h4>Middle phase</h4><p>As generative AI became politically salient, governance shifted from abstract concern to categorised risk and formal compliance.</p></div><div class="tbox"><h4>Current reality</h4><p>The EU AI Act gives this concern legal form and explicitly requires human oversight in high-risk contexts.</p></div></div><div class="sources"><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng" target="_blank">Official EU AI Act text</a><a href="https://artificialintelligenceact.eu/article/14/" target="_blank">Article 14 — Human Oversight</a><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank">EU digital strategy overview</a></div></div>
   </div>
 
   <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observations 52–54 — Interpreted Languages &amp; Experimental Computing</div>
-      <div class="obs-text">There is also curiosity about <strong>programming languages that execute code line by line rather than compiling everything at once.</strong> Interactive computational environments allow ideas to be tested quickly and encourage experimentation. Such experimentation-focused computing environments support rapid iteration and exploration.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — this has already won</div>
-    <div class="evidence">
-      <div class="ev-title">Current Global Standpoint</div>
-      <div class="ev-body">Notebook-style, exploratory, fast-feedback computing has effectively become the default workflow in AI, data work, and prototyping. Your instinct here was dead-on.</div>
-    </div>
+    <div class="obshead"><div class="obsnum">Observation dossier 04</div><div class="obstext">Population pressure will eventually force cities to stop treating transport, zoning, housing, and infrastructure as separate bureaucratic boxes. As cities become denser and more economically central, urban systems will need to become layered: better land use, better movement planning, stronger infrastructure allocation, and more coordinated systems of mobility. Otherwise, cities do not merely become crowded; they become structurally inefficient.</div></div>
+    <div class="badge confirmed">Confirmed</div>
+    <div class="body"><div class="label">Verified voices across time</div><div class="timeline"><div class="tbox"><h4>Baseline</h4><p>Urbanisation has been a long-running structural trend, not a passing wave.</p></div><div class="tbox"><h4>Middle phase</h4><p>Planning stress increasingly showed up in commute times, bottlenecks, land use, and infrastructure financing.</p></div><div class="tbox"><h4>Current reality</h4><p>The UN’s 2025 urbanization update confirms that the pressure behind this observation remains one of the strongest forces in the whole document.</p></div></div><div class="sources"><a href="https://population.un.org/wup/" target="_blank">UN World Urbanization Prospects portal</a><a href="https://population.un.org/wup/assets/Publications/undesa_pd_2025_wup2025_summary_of_results_final.pdf" target="_blank">WUP 2025 summary</a><a href="https://population.un.org/wup/assets/WUP2018-Highlights.pdf" target="_blank">WUP 2018 highlights</a></div></div>
+  </div>
+
+  <div class="obs">
+    <div class="obshead"><div class="obsnum">Observation dossier 05</div><div class="obstext">India’s transport future may become stronger not by endlessly forcing more movement through roads alone, but by gradually developing a layered mobility structure where rail, waterways, metro systems, coastal routes, and feeder systems each take the kinds of load they handle best. The point is not to romanticise waterways. It is to stop pretending that one mode should carry everything in a country of this size.</div></div>
+    <div class="badge supported">Strongly supported</div>
+    <div class="body"><div class="label">Verified voices across time</div><div class="timeline"><div class="tbox"><h4>Foundational logic</h4><p>Port-development and transport-corridor literature has long argued that multimodal systems shape regional development more effectively than isolated channels.</p></div><div class="tbox"><h4>Middle phase</h4><p>As congestion and logistics costs grew, waterways and multimodal freight became less decorative and more practical.</p></div><div class="tbox"><h4>Current reality</h4><p>Official Indian releases now support the trend directly, with inland-waterway cargo rising sharply and policy language explicitly framing waterways as a complement to road and rail.</p></div></div><div class="sources"><a href="https://www.pib.gov.in/PressReleaseIframePage.aspx?PRID=2124061" target="_blank">PIB — cargo growth on inland waterways</a><a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2216510&lang=1&reg=3" target="_blank">PIB — IWDC 3.0 / Jan 2026</a><a href="https://www.sciencedirect.com/science/article/pii/S2214241X15000413" target="_blank">Dwarakish &amp; Salim 2015</a><a href="https://www.sciencedirect.com/science/article/pii/S2352146517306464" target="_blank">Öberg 2017 — transport corridors</a></div></div>
   </div>
 </section>
 
-<section class="section" id="sC">
-  <div class="sec-eye">
-    <div class="sec-big">C</div>
-    <div><div class="sec-tag">Section C · 8 observations</div><div class="sec-h">Materials &amp; Resources</div></div>
-  </div>
-  <div class="sec-div"></div>
+<section class="section" id="pdfideas">
+  <div class="sectionhead"><div class="big">C</div><div><div class="tag">New observations from the PDFs</div><h2>The PDF-derived strategic layer kept in fuller form</h2></div></div>
 
   <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 18 — Sustainable Mining for EV Materials</div>
-      <div class="obs-text">The increasing demand for electric vehicle batteries will require massive amounts of minerals. This may lead to the development of <strong>sustainable mining techniques designed to extract these resources while minimizing environmental damage.</strong></div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — now a legislative and industrial priority</div>
-    <div class="evidence">
-      <div class="ev-title">Current Global Standpoint</div>
-      <div class="ev-body">This has become policy, industry strategy, and geopolitics all at once. The broad observation holds firmly.</div>
-    </div>
+    <div class="obshead"><div class="obsnum">PDF observation 01</div><div class="obstext">The next phase of regional power may depend less on isolated cities, ports, military bases, or technologies, and more on <strong>corridor-building</strong>: land corridors, maritime corridors, energy corridors, logistics corridors, and data corridors that convert geography into coordinated strategic advantage. The deeper idea is that isolated assets matter less if they are not linked into functioning flows.</div></div>
+    <div class="badge framework">Framework with strong support</div>
   </div>
 
   <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 19 — Hybrid Organic–Inorganic Materials</div>
-      <div class="obs-text">Future materials might combine organic and inorganic components. For example, <strong>natural waste products or biological materials could be combined with industrial compounds to create strong and sustainable construction materials.</strong></div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — commercial products already exist</div>
-    <div class="evidence">
-      <div class="ev-title">Current Global Standpoint</div>
-      <div class="ev-body">This is already happening in multiple materials classes. Your observation was not merely plausible; it was a little late to the party, which is a nice problem to have.</div>
-    </div>
+    <div class="obshead"><div class="obsnum">PDF observation 02</div><div class="obstext">India, Bangladesh, Nepal, Bhutan, and — if political stability improves — Myanmar form a high-potential connectivity arc where cross-border electricity, hydropower, manufacturing, and transport integration could reinforce one another. The strongest version of this observation is not a neat geometric map fantasy, but a corridor logic in which Bangladesh becomes more than a neighbour and starts acting as a logistics and transit hinge, while the eastern belt becomes a way of reducing fragility rather than merely describing it.</div></div>
+    <div class="badge partial">Partially supported</div>
+    <div class="body"><div class="label">Verified voices across time</div><div class="timeline"><div class="tbox"><h4>Structural logic</h4><p>Regional-development and corridor literature strongly supports the general claim that transport rights, ports, and corridor integration can alter economic and strategic geography without formal territorial change.</p></div><div class="tbox"><h4>Middle phase</h4><p>India–Bangladesh connectivity projects, rail links, and border infrastructure made this logic more concrete, even if politics and bargaining remain inconsistent.</p></div><div class="tbox"><h4>Current reality</h4><p>The current record is mixed rather than tidy. Real connectivity exists and is growing, but friction in India–Bangladesh logistics policy shows the corridor remains politically contingent rather than fully consolidated.</p></div></div><div class="sources"><a href="https://aric.adb.org/initiative/bangladesh-bhutan-india-and-nepal-motor-vehicles-agreement" target="_blank">ADB ARIC — BBIN Motor Vehicles Agreement</a><a href="https://www.reuters.com/world/india/india-withdraws-transhipment-facility-bangladesh-exports-via-land-borders-2025-04-09/" target="_blank">Reuters — India/Bangladesh transshipment reversal</a></div></div>
   </div>
 
   <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observations 20–21 — Industrial Oils &amp; “Super Oils”</div>
-      <div class="obs-text">Oil research may not disappear even as energy systems evolve. Instead, <strong>oil could be refined into extremely efficient industrial lubricants</strong> capable of making machines operate with less friction and greater efficiency. In a related idea, there may be <strong>advanced lubrication compounds</strong> created by combining oil with gases, salts, or other chemical additives to enhance mechanical performance dramatically.</div>
-    </div>
-    <div class="verdict v-partial">~ Partially Supported — real field, but more incremental than revolutionary</div>
+    <div class="obshead"><div class="obsnum">PDF observation 03</div><div class="obstext">The Bay of Bengal should not be read only as a coastline or naval zone. It is better understood as a layered strategic arc where trade, logistics, maritime awareness, storm intelligence, and undersea positioning can overlap. Its value rises not because one single function dominates, but because multiple functions converge there at once.</div></div>
+    <div class="badge supported">Strongly supported</div>
+    <div class="body"><div class="label">Verified voices across time</div><div class="timeline"><div class="tbox"><h4>Foundational logic</h4><p>Port-development literature and maritime-transport reviews have long shown that coastal infrastructure shapes national and regional integration far beyond local throughput.</p></div><div class="tbox"><h4>Middle phase</h4><p>The rise of Indo-Pacific thinking, Bay terminals, corridor planning, and security cooperation made the Bay of Bengal increasingly legible as a strategic system.</p></div><div class="tbox"><h4>Current reality</h4><p>Recent port and logistics developments, including Bay Terminal investment in Bangladesh, support your core idea that this coastline is growing in value because multiple strategic functions are converging there at once.</p></div></div><div class="sources"><a href="https://www.sciencedirect.com/science/article/pii/S2214241X15000413" target="_blank">Ports in national development — 2015 review</a><a href="https://unctad.org/system/files/official-document/rmt2015_en.pdf" target="_blank">UNCTAD Review of Maritime Transport</a><a href="https://www.reuters.com/markets/asia/bangladesh-world-bank-sign-850-million-deal-boost-jobs-trade-2025-04-24/" target="_blank">Reuters — Bangladesh Bay Terminal financing</a><a href="https://www.worldbank.org/en/news/press-release/2025/04/23/world-bank-bangladesh-sign-850-million-financing-package-to-create-jobs-boost-trade-modernize-social-protection-system" target="_blank">World Bank — Bay Terminal release</a></div></div>
   </div>
 
   <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observations 22–25 — Desert Sand: Construction, Minerals, Thermal, Storage</div>
-      <div class="obs-text"><strong>Desert sand represents a massive natural resource.</strong> It might be processed into structural materials, mined for trace value, or used in thermal buffering and heat management systems.</div>
-    </div>
-    <div class="verdict v-partial">~ Mixed — thermal storage is real; large-scale construction use remains stubborn</div>
+    <div class="obshead"><div class="obsnum">PDF observation 04</div><div class="obstext">Future infrastructure may increasingly be expected to do at least two jobs at once: move and sense, transport and monitor, coordinate and defend, carry cargo and generate environmental intelligence. In that sense, <strong>dual-use infrastructure</strong> may become normal rather than exceptional.</div></div>
+    <div class="badge supported">Strongly supported</div>
+  </div>
+
+  <div class="obs">
+    <div class="obshead"><div class="obsnum">PDF observation 05</div><div class="obstext">Future infrastructure may increasingly come in pairs: the visible physical system and an invisible computational shadow that monitors, simulates, predicts, and optimises it. Roads, ports, rivers, urban systems, and coastal systems will not simply need concrete and steel anymore; they will also need telemetry, modelling, and live interpretation layers.</div></div>
+    <div class="badge framework">Framework with strong support</div>
+    <div class="body"><div class="label">Verified voices across time</div><div class="timeline"><div class="tbox"><h4>Early discussion</h4><p>Cyber-physical systems and simulation models laid the groundwork, but the concept became more coherent as real-time sensing and cloud systems matured.</p></div><div class="tbox"><h4>Middle phase</h4><p>Digital twins became visible first in industrial systems and manufacturing, where continuous monitoring and updated models produced practical value.</p></div><div class="tbox"><h4>Current reality</h4><p>Recent work now extends the same logic into river basins, water hazards, infrastructure management, and wider cyber-physical systems.</p></div></div><div class="sources"><a href="https://www.nature.com/research-intelligence/nri-topic-summaries/digital-twin-technology-in-cyber-physical-systems-micro-1610" target="_blank">Nature overview — digital twins in cyber-physical systems</a><a href="https://www.nature.com/articles/s44304-024-00047-2" target="_blank">Nature Water 2024 — river basin digital twins</a><a href="https://iwaponline.com/hr/article/56/3/197/107066/Blueprint-conceptualization-for-a-river-basin-s" target="_blank">Hydrology Research 2025 — river basin blueprint</a></div></div>
+  </div>
+
+  <div class="obs">
+    <div class="obshead"><div class="obsnum">PDF observation 06</div><div class="obstext">Modern war no longer remains confined to battlefronts. It spills immediately into shipping corridors, oil and gas, insurance, logistics, strategic infrastructure, and emergency substitution systems. That means war is increasingly best understood not only as military movement, but as a systems-level disruption that propagates through energy and trade.</div></div>
+    <div class="badge confirmed">Confirmed</div>
+    <div class="body"><div class="label">Verified voices across time</div><div class="timeline"><div class="tbox"><h4>Earlier warning</h4><p>Energy-security and maritime-chokepoint analysis long recognised that conflict in sea lanes can transmit economic shock far beyond the combat zone itself.</p></div><div class="tbox"><h4>Middle phase</h4><p>Hybrid conflict and supply-chain fragility made this clearer as cyber, maritime, and energy systems began overlapping more visibly.</p></div><div class="tbox"><h4>Current reality</h4><p>Current reporting on Hormuz-linked disruption, tanker routing, port traffic decline, and oil-supply shock supports your claim almost too neatly.</p></div></div><div class="sources"><a href="https://www.reuters.com/world/middle-east/dp-world-jebel-ali-port-fully-operational-inbound-vessel-traffic-reduced-2026-03-12/" target="_blank">Reuters — Jebel Ali traffic decline</a><a href="https://www.reuters.com/world/india/iran-allow-india-flagged-tankers-pass-through-strait-hormuz-indian-source-says-2026-03-12/" target="_blank">Reuters — India-flagged tankers through Hormuz</a><a href="https://www.reuters.com/business/energy/world-faces-largest-ever-oil-supply-disruption-middle-east-war-iea-says-2026-03-12/" target="_blank">Reuters — largest oil-supply disruption</a></div></div>
   </div>
 </section>
 
-<section class="section" id="sD">
-  <div class="sec-eye">
-    <div class="sec-big">D</div>
-    <div><div class="sec-tag">Section D · 10 observations</div><div class="sec-h">Urban Infrastructure &amp; Mobility</div></div>
-  </div>
-  <div class="sec-div"></div>
-  <div class="sec-note">The most coherent chain of reasoning in the document. Urban pressure is one of the firmest trends in social science, and much of the downstream mobility logic follows from that.</div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 12 — Advanced Urban Planning Requirements</div>
-      <div class="obs-text"><strong>Urban population growth will likely require much more advanced city planning.</strong> Cities will need better infrastructure allocation, more efficient transportation networks, and smarter zoning strategies to manage increasing density.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — one of the most robust observations in the document</div>
-    <div class="evidence">
-      <div class="ev-title">Current Global Standpoint</div>
-      <div class="ev-body">Urbanization remains one of the clearest structural pressures on infrastructure, services, and spatial planning. That is not speculative; it is demographic arithmetic with traffic problems attached.</div>
-      <div class="chart-wrap">
-        <div class="chart-title">Global Urban Population Share 1950–2050</div>
-        <div class="chart-sub">% of world population living in urban areas</div>
-        <div class="canvas-box"><canvas id="urbanPop"></canvas></div>
-        <div class="chart-src">Source base: UN urbanization reporting</div>
-      </div>
-      <div class="sources">
-        <div class="src">UN urbanization baseline — <a href="https://population.un.org/wup/assets/WUP2018-Highlights.pdf" target="_blank">WUP 2018 ↗</a></div>
-        <div class="src">UN current summary — <a href="https://population.un.org/wup/assets/Publications/undesa_pd_2025_wup2025_summary_of_results_final.pdf" target="_blank">WUP 2025 summary ↗</a></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 13 — Underground Vehicular Roads</div>
-      <div class="obs-text">One possible solution to urban congestion is <strong>the development of underground vehicular roads.</strong> Instead of using underground space only for metro systems, entire road layers could be built below the surface, allowing vehicles to travel through subterranean traffic networks.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — operational and studied in multiple settings</div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 14 — Modular Transport Pods</div>
-      <div class="obs-text"><strong>Transportation itself might become modular.</strong> Individual pods or vehicles could synchronize with others moving in the same direction, temporarily joining together before separating again when travelers reach their individual destinations.</div>
-    </div>
-    <div class="verdict v-emerging">↗ Emerging — truck platooning exists; passenger versions remain earlier-stage</div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observations 15–16 — Personal Vehicles as Hobby Machines / Motorsport Growth</div>
-      <div class="obs-text">If such systems develop, <strong>personal vehicles may gradually shift from daily necessities to hobby machines</strong> used for recreation or enthusiast driving. Racetracks and controlled driving environments could grow accordingly.</div>
-    </div>
-    <div class="verdict v-partial">~ Partially Supported — early signals exist, but this is a longer transition</div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 17 — Inter-Land Rocket Logistics</div>
-      <div class="obs-text">There could also be new forms of long-distance logistics, such as <strong>rockets that travel through the upper atmosphere to deliver emergency supplies quickly across continents.</strong></div>
-    </div>
-    <div class="verdict v-emerging">↗ Emerging — militarily interesting, commercially awkward</div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observations 11, 27–28, 59 — Micro-Transport, Embedded Lighting, Invisible Infrastructure</div>
-      <div class="obs-text">In the transportation sector, <strong>small-scale machines may become increasingly important.</strong> Urban lighting may shift toward <strong>embedded strips</strong>. Infrastructure may become increasingly invisible, integrated directly into cities and environments.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — deployment patterns already exist</div>
-  </div>
+<section class="section" id="charts">
+  <div class="sectionhead"><div class="big">D</div><div><div class="tag">Supporting visuals</div><h2>A few quick charts to anchor the page</h2></div></div>
+  <div class="chart"><h4>Global urban population share, 1950–2050</h4><p>Illustrative line based on UN urbanization reporting.</p><div class="canvasbox"><canvas id="urbanPop"></canvas></div></div>
+  <div class="chart"><h4>Global EV sales, 2019–2025</h4><p>Illustrative bar chart based on IEA Global EV Outlook reporting.</p><div class="canvasbox"><canvas id="evSales"></canvas></div></div>
+  <div class="chart"><h4>Illustrative foundry concentration profile</h4><p>Doughnut summary showing why chip concentration matters strategically.</p><div class="canvasbox"><canvas id="tsmc"></canvas></div></div>
 </section>
 
-<section class="section" id="sE">
-  <div class="sec-eye">
-    <div class="sec-big">E</div>
-    <div><div class="sec-tag">Section E · 7 observations</div><div class="sec-h">Biology Meets Technology</div></div>
-  </div>
-  <div class="sec-div"></div>
-  <div class="sec-note">The most imaginative section — and the one where the confidence labels matter most. Some are active deployments, some are lab curiosities, and some are decades away.</div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 08 — Electronics Integrated With Nature</div>
-      <div class="obs-text">It is also possible that <strong>electronics and sensors may be integrated into natural ecosystems.</strong> Sensors embedded in trees, soil, or forests could monitor environmental conditions continuously and help manage ecological restoration.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — operational globally</div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observations 30–32 — Bio-Hybrid Systems: Spider Actuators, Insects in Manufacturing &amp; Medicine</div>
-      <div class="obs-text">Biological structures might someday function as mechanical actuators. Insects could assist in microscopic manufacturing or medical procedures where tiny, precise movement matters.</div>
-    </div>
-    <div class="verdict v-speculative">? Speculative — scientifically interesting, still far from widespread deployment</div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observations 56 &amp; 58 — Convergence of Biology, Electronics &amp; Materials / Machines Becoming Organic</div>
-      <div class="obs-text"><strong>Future technologies may increasingly combine biological systems, electronics, and advanced materials into hybrid systems.</strong> Technological systems may become less rigid and more organic in behavior.</div>
-    </div>
-    <div class="verdict v-emerging">↗ Emerging — real research direction</div>
-  </div>
+<section class="section" id="backbone">
+  <div class="sectionhead"><div class="big">R</div><div><div class="tag">Research backbone</div><h2>Core source shelf</h2></div></div>
+  <div class="obs"><div class="obshead"><div class="obsnum">Verified voices used in this final hybrid build</div><div class="obstext">This shelf mixes official reports, journals, policy texts, and reporting because that is the method you asked for: relevant verified voices across time, not one narrow class of authority pretending to be the whole universe.</div></div><div class="body"><div class="sources"><a href="https://www.microsoft.com/en-us/corporate-responsibility/cybersecurity/microsoft-digital-defense-report-2025/" target="_blank">Microsoft Digital Defense Report 2025</a><a href="https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/msc/documents/presentations/CSR/Microsoft-Digital-Defense-Report-2025.pdf" target="_blank">MDDR 2025 PDF</a><a href="https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-249a" target="_blank">CISA / FBI / NSA cyber advisory</a><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng" target="_blank">EU AI Act official text</a><a href="https://population.un.org/wup/assets/Publications/undesa_pd_2025_wup2025_summary_of_results_final.pdf" target="_blank">UN World Urbanization Prospects 2025</a><a href="https://population.un.org/wup/assets/WUP2018-Highlights.pdf" target="_blank">UN WUP 2018 highlights</a><a href="https://www.pib.gov.in/PressReleaseIframePage.aspx?PRID=2124061" target="_blank">PIB — inland waterways cargo growth</a><a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2216510&lang=1&reg=3" target="_blank">PIB — IWDC 3.0 / Jan 2026</a><a href="https://www.sciencedirect.com/science/article/pii/S2214241X15000413" target="_blank">Dwarakish &amp; Salim 2015 — ports and development</a><a href="https://www.sciencedirect.com/science/article/pii/S2352146517306464" target="_blank">Öberg 2017 — transport corridors</a><a href="https://www.nature.com/research-intelligence/nri-topic-summaries/digital-twin-technology-in-cyber-physical-systems-micro-1610" target="_blank">Nature overview — digital twins</a><a href="https://www.nature.com/articles/s44304-024-00047-2" target="_blank">Nature Water 2024 — river basin digital twins</a><a href="https://www.reuters.com/markets/asia/bangladesh-world-bank-sign-850-million-deal-boost-jobs-trade-2025-04-24/" target="_blank">Reuters — Bangladesh Bay Terminal financing</a><a href="https://www.reuters.com/world/india/india-withdraws-transhipment-facility-bangladesh-exports-via-land-borders-2025-04-09/" target="_blank">Reuters — India / Bangladesh transshipment reversal</a><a href="https://www.reuters.com/world/middle-east/dp-world-jebel-ali-port-fully-operational-inbound-vessel-traffic-reduced-2026-03-12/" target="_blank">Reuters — Jebel Ali traffic decline</a><a href="https://www.reuters.com/business/energy/world-faces-largest-ever-oil-supply-disruption-middle-east-war-iea-says-2026-03-12/" target="_blank">Reuters — oil-supply disruption</a><a href="https://www.iea.org/reports/global-ev-outlook-2025/executive-summary" target="_blank">IEA Global EV Outlook 2025</a><a href="https://www.semiconductors.org/" target="_blank">Semiconductor Industry Association</a></div></div></div>
 </section>
 
-<section class="section" id="sF">
-  <div class="sec-eye">
-    <div class="sec-big">F</div>
-    <div><div class="sec-tag">Section F · 6 observations</div><div class="sec-h">Electric Vehicles &amp; Drivetrains</div></div>
-  </div>
-  <div class="sec-div"></div>
-  <div class="sec-note">The most technically precise section in the document — and one of the most clearly validated by real production vehicles.</div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observations 42–47 — Multi-Speed Gearboxes, Torque Distribution, Motor Switching, Asymmetric Ratios</div>
-      <div class="obs-text"><strong>Electric vehicles may benefit from multi-speed gearboxes that allow motors to operate in their most efficient ranges.</strong> Torque loads can be distributed, motors can be selectively activated, and different gear ratios can suit different operating conditions.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — these are current production engineering decisions</div>
-    <div class="evidence">
-      <div class="ev-title">Current Global Standpoint</div>
-      <div class="ev-body">The engineering logic behind this cluster is very solid, and EV market growth makes these design choices more important, not less.</div>
-      <div class="chart-wrap">
-        <div class="chart-title">Global EV Sales 2019–2025</div>
-        <div class="chart-sub">Annual electric car units sold worldwide (millions)</div>
-        <div class="canvas-box"><canvas id="evSales"></canvas></div>
-        <div class="chart-src">Source base: IEA Global EV Outlook 2025</div>
-      </div>
-      <div class="flowchart">
-        <div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">Your EV Thesis → Production Reality</div>
-        <div class="fc-row"><div class="fc-box gold">Multi-speed gearbox needed</div><div class="fc-arrow">→</div><div class="fc-box green">Porsche Taycan 2-speed</div></div>
-        <div class="fc-down">↓</div>
-        <div class="fc-row"><div class="fc-box gold">Motor deactivation at low load</div><div class="fc-arrow">→</div><div class="fc-box green">Tesla decoupling logic</div></div>
-        <div class="fc-down">↓</div>
-        <div class="fc-row"><div class="fc-box gold">Asymmetric gear ratios per motor</div><div class="fc-arrow">→</div><div class="fc-box green">Lucid / Taycan front-rear ratio split</div></div>
-      </div>
-      <div class="sources">
-        <div class="src">IEA EV Outlook 2025 — <a href="https://www.iea.org/reports/global-ev-outlook-2025/executive-summary" target="_blank">iea.org ↗</a></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="sG">
-  <div class="sec-eye">
-    <div class="sec-big">G</div>
-    <div><div class="sec-tag">Section G · 5 observations</div><div class="sec-h">Modular Fashion Design</div></div>
-  </div>
-  <div class="sec-div"></div>
-  <div class="sec-note">The most underrated section. Modularity logic applies here too, even if the market is slower to admit it.</div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observations 37–40 — Modular, Transformable, Multi-Form Garments</div>
-      <div class="obs-text">In fashion, <strong>clothing might become modular so that a single garment can transform into multiple forms.</strong> Folding and structural design could allow garments to become thicker or more expressive while using less fabric.</div>
-    </div>
-    <div class="verdict v-emerging">↗ Emerging — niche commercial traction, not mainstream yet</div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 41 — Structural Weaving Replacing Dyes</div>
-      <div class="obs-text"><strong>Structural weaving techniques might eventually replace heavy dye usage</strong> by creating visual textures directly through fabric structure.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — active research with commercial pilots</div>
-  </div>
-</section>
-
-<section class="section" id="sH">
-  <div class="sec-eye">
-    <div class="sec-big">H</div>
-    <div><div class="sec-tag">Section H · 2 observations</div><div class="sec-h">Industrial Cleanliness</div></div>
-  </div>
-  <div class="sec-div"></div>
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observations 33–34 — Ultra-Clean Industries &amp; Micro-Maintenance Tools</div>
-      <div class="obs-text">As industries such as semiconductors and pharmaceuticals grow, cleanliness becomes extremely important. <strong>Entire industries may emerge around maintaining ultra-clean environments.</strong></div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — this is already a major sector</div>
-  </div>
-</section>
-
-<section class="section" id="sI">
-  <div class="sec-eye">
-    <div class="sec-big">I</div>
-    <div><div class="sec-tag">Section I · 2 observations</div><div class="sec-h">Sports &amp; Culture</div></div>
-  </div>
-  <div class="sec-div"></div>
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observations 35–36 — Football's Dominance &amp; Tennis as Global Tournament Sport</div>
-      <div class="obs-text">Football will probably remain popular, but its global dominance may gradually be balanced by other sports gaining prominence. Tennis could eventually develop larger international competitions between countries.</div>
-    </div>
-    <div class="verdict v-speculative">? Speculative — interesting hypothesis, weak near-term evidence</div>
-  </div>
-</section>
-
-<section class="section" id="sJ">
-  <div class="sec-eye">
-    <div class="sec-big">J</div>
-    <div><div class="sec-tag">Section J · 4 observations</div><div class="sec-h">Systems Thinking &amp; Civilisation</div></div>
-  </div>
-  <div class="sec-div"></div>
-  <div class="sec-note">The most philosophically ambitious section — and the one that ties the rest together.</div>
-
-  <div class="pq"><p>"Ultimately, human progress may move toward <strong>designing entire interconnected systems</strong> — cities, transportation networks, ecological monitoring, and technology infrastructure — rather than focusing only on individual inventions."</p></div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 10 — Human Dominance in Law &amp; Policy Despite AI</div>
-      <div class="obs-text">Even with these developments, <strong>the fields of law and governance may remain largely human-controlled.</strong> Ethical judgment, social values, and responsibility may require human involvement even if artificial intelligence becomes extremely powerful in other areas.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — every major AI regulation explicitly mandates this</div>
-    <div class="evidence">
-      <div class="ev-title">Current Global Standpoint</div>
-      <div class="ev-body">Human oversight remains the legal and policy norm in consequential AI domains.</div>
-      <div class="sources">
-        <div class="src">EU AI Act official text — <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng" target="_blank">eur-lex.europa.eu ↗</a></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observations 55, 57 &amp; 60 — Modularity, Access over Ownership, System-Level Design</div>
-      <div class="obs-text"><strong>Across many industries, systems appear to be evolving toward modular and flexible designs</strong> that can adapt to different situations. Society may gradually shift from <strong>ownership-based systems toward access-based systems,</strong> especially in transportation. Ultimately, <strong>human progress may move toward designing entire interconnected systems</strong> rather than only individual inventions.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Confirmed — these are among the strongest meta-observations in the document</div>
-  </div>
-</section>
-
-<section class="section" id="sK">
-  <div class="sec-eye">
-    <div class="sec-big">K</div>
-    <div>
-      <div class="sec-tag">Section K · 10 new observations</div>
-      <div class="sec-h">New Observations · Corridors, Transit &amp; War Systems</div>
-    </div>
-  </div>
-  <div class="sec-div"></div>
-
-  <div class="sec-note">
-    These later observations extend the earlier framework rather than replacing it. The underlying pattern is that power no longer comes only from isolated assets — a city, a port, a missile system, a chip fab, or a highway. It increasingly comes from how such assets are linked into corridors, operating layers, and systems that combine movement, sensing, resilience, logistics, and strategic coordination.
-  </div>
-
-  <div class="section-note-grid" style="margin-bottom:24px;">
-    <div class="mini-note">
-      <strong>Core bridge:</strong> geography becomes power when it is converted into a corridor — not only roads or ports, but energy corridors, data corridors, maritime corridors, and resilience corridors.
-    </div>
-    <div class="mini-note">
-      <strong>Second bridge:</strong> infrastructure is increasingly expected to do more than one job at once — transport plus sensing, logistics plus intelligence, energy plus coordination, or security plus disaster response.
-    </div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 61 — Corridor Power as the Next Strategic Logic</div>
-      <div class="obs-text">The next phase of regional power may depend less on isolated cities, single military bases, or standalone technologies, and more on <strong>corridor-building</strong>: land corridors, maritime corridors, energy corridors, logistics corridors, and data corridors that convert geography into coordinated economic and strategic advantage.<br><br>This ties together semiconductor routes, shipping lanes, cross-border electricity, industrial belts, and military positioning. Modern power is increasingly <strong>relational</strong>, meaning it depends on how effectively locations, systems, and flows are connected.</div>
-    </div>
-    <div class="verdict v-framework">◆ Strong Framework</div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 62 — Eastern South Asia Corridor Thesis</div>
-      <div class="obs-text">India, Bangladesh, Nepal, Bhutan, and — if political stability improves — Myanmar form a high-potential corridor zone where <strong>transport integration, cross-border electricity trade, hydropower, and manufacturing</strong> could reinforce one another.<br><br>The stronger version is not a neat map-shape fantasy, but a corridor logic: hydropower in Nepal and Bhutan, industrial and logistics scale in India and Bangladesh, and overland access toward Southeast Asia through Myanmar.</div>
-    </div>
-    <div class="verdict v-partial">~ Partially Supported</div>
-    <div class="evidence">
-      <div class="ev-title">Evidence Shelf</div>
-      <div class="sources">
-        <div class="src">BBIN Motor Vehicles Agreement framework — <a href="https://aric.adb.org/initiative/bangladesh-bhutan-india-and-nepal-motor-vehicles-agreement" target="_blank">ADB ARIC ↗</a></div>
-        <div class="src">Regional integration frictions matter too — <a href="https://www.reuters.com/world/india/india-withdraws-transhipment-facility-bangladesh-exports-via-land-borders-2025-04-09/" target="_blank">Reuters on India-Bangladesh transshipment reversal ↗</a></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 63 — Bay of Bengal as a Multi-Function Strategic Arc</div>
-      <div class="obs-text">The Bay of Bengal should be understood not only as a naval space, but also as a <strong>trade route, maritime-security zone, and meteorological information space</strong> whose value may rise sharply as conflict, shipping risk, and climate volatility intensify.<br><br>The stronger claim is not that this is already an “unbreakable shield,” but that it is becoming a zone where commerce, surveillance, energy, and disaster intelligence overlap.</div>
-    </div>
-    <div class="verdict v-partial">~ Partially Supported</div>
-    <div class="evidence">
-      <div class="ev-title">Evidence Shelf</div>
-      <div class="sources">
-        <div class="src">Bay Terminal infrastructure upgrade in Bangladesh — <a href="https://www.reuters.com/markets/asia/bangladesh-world-bank-sign-850-million-deal-boost-jobs-trade-2025-04-24/" target="_blank">Reuters ↗</a></div>
-        <div class="src">World Bank Bay Terminal announcement — <a href="https://www.worldbank.org/en/news/press-release/2025/04/23/world-bank-bangladesh-sign-850-million-financing-package-to-create-jobs-boost-trade-modernize-social-protection-system" target="_blank">World Bank ↗</a></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 64 — Infrastructure Will Become Dual-Use by Default</div>
-      <div class="obs-text">Future infrastructure may increasingly be expected to do at least two jobs at once: <strong>transport plus sensing, logistics plus intelligence, maintenance plus environmental monitoring, or energy transfer plus strategic resilience.</strong><br><br>A bridge may no longer be only a bridge. A port may no longer be only a cargo node. A water route may no longer be only movement space. Systems will increasingly be judged by how many layers of value they deliver at once.</div>
-    </div>
-    <div class="verdict v-emerging">↗ Emerging</div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 65 — India May Move Toward Layered Transit Instead of Road-Dominant Transit</div>
-      <div class="obs-text">India’s future transport advantage may come from combining <strong>rail, metro, water metro, inland waterways, coastal cargo, and short-range feeder systems</strong> into one layered network rather than relying overwhelmingly on roads.<br><br>This is not anti-road romanticism. Roads remain central. The argument is that India-scale movement may perform better when load is distributed across multiple layers instead of being forced through one dominant channel.</div>
-    </div>
-    <div class="verdict v-partial">~ Partially Supported</div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 66 — Waterways Could Become India’s Quiet Second Transport Spine</div>
-      <div class="obs-text">As congestion, logistics costs, and emissions pressure rise, <strong>inland waterways and coastal shipping may become a second transport spine for India</strong> — not replacing roads and rail, but absorbing freight, island movement, and selected urban transit functions.<br><br>Waterways do not need to dominate transport to matter strategically. They only need to become meaningful where road and rail are overloaded, expensive, or fragile.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Supported Trend</div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 67 — Physical Infrastructure May Need a Computational Twin by Default</div>
-      <div class="obs-text">Future transport, environmental, and urban systems may increasingly require a parallel digital layer — <strong>telemetry, simulation, prediction, and command logic</strong> — so that infrastructure is not only built, but continuously interpreted and optimized.<br><br>The real infrastructure of the future may come in pairs: the visible physical layer and the invisible computational layer.</div>
-    </div>
-    <div class="verdict v-framework">◆ Strong Framework</div>
-    <div class="evidence">
-      <div class="ev-title">Evidence Shelf</div>
-      <div class="sources">
-        <div class="src">Digital twin technology in cyber-physical systems — <a href="https://www.nature.com/research-intelligence/nri-topic-summaries/digital-twin-technology-in-cyber-physical-systems-micro-1610" target="_blank">Nature summary ↗</a></div>
-        <div class="src">Digital twinning of river basins — <a href="https://www.nature.com/articles/s44304-024-00047-2" target="_blank">Nature Water 2024 ↗</a></div>
-        <div class="src">Digital twins of the Earth — <a href="https://www.nature.com/articles/s43247-024-01626-x" target="_blank">Communications Earth &amp; Environment 2024 ↗</a></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 68 — Indian Water Infrastructure Could Become Dual-Use: Mobility + Ecological Intelligence</div>
-      <div class="obs-text">In India, especially along coasts and river systems, future water infrastructure could increasingly do two jobs at once: <strong>move people or freight while also collecting ecological, flood, sediment, or pollution data</strong> for resilience and restoration.<br><br>This pushes beyond “use waterways more” toward “make waterways intelligent.”</div>
-    </div>
-    <div class="verdict v-emerging">↗ Emerging</div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 69 — India’s Next Infrastructure Shift May Be From Single-Purpose Systems to Layered, Dual-Use Systems</div>
-      <div class="obs-text">Rather than building separate systems for transport, sensing, resilience, and logistics, India may gradually gain more by creating layered infrastructure where <strong>roads, rail, waterways, ports, sensors, and digital platforms work together as one operating stack.</strong><br><br>This is not a claim that India has already achieved this. It is a claim about the most intelligent direction of development under scale, complexity, climate risk, and logistics pressure.</div>
-    </div>
-    <div class="verdict v-emerging">↗ Emerging Systems Thesis</div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Observation 70 — War Reorders Energy, Shipping, and Strategic Computation Simultaneously</div>
-      <div class="obs-text">Modern war spills immediately into <strong>energy markets, shipping corridors, digital systems, and strategic infrastructure</strong>, which means geopolitical conflict must be understood as a systems-level disruption rather than a purely battlefield event.<br><br>Conflict no longer remains confined to frontlines. It radiates into insurance, maritime routes, fuel costs, cyber risk, market pricing, and logistics delays.</div>
-    </div>
-    <div class="verdict v-confirmed">✓ Current Systems Observation</div>
-    <div class="evidence">
-      <div class="ev-title">Evidence Shelf</div>
-      <div class="sources">
-        <div class="src">Reuters on vessels attacked in Gulf / Hormuz — <a href="https://www.reuters.com/world/cargo-ship-hit-by-projectile-strait-hormuz-crew-evacuates-2026-03-11/" target="_blank">Reuters ↗</a></div>
-        <div class="src">Reuters graphic on Hormuz oil/LNG disruption — <a href="https://www.reuters.com/graphics/IRAN-CRISIS/OIL-LNG/mopaokxlypa/" target="_blank">Reuters graphics ↗</a></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="sR">
-  <div class="sec-eye">
-    <div class="sec-big">R</div>
-    <div>
-      <div class="sec-tag">Section R · meta synthesis + source shelf</div>
-      <div class="sec-h">What the Notes Actually Converge Toward</div>
-    </div>
-  </div>
-  <div class="sec-div"></div>
-
-  <div class="sec-note">
-    The newer notes do not merely add more scattered ideas. They repeatedly converge on a smaller number of deeper patterns. This section exists to make that explicit.
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Meta Section — Underlying Patterns Across the Notes</div>
-      <div class="obs-text">
-        The notes repeatedly return to the same deeper structures. First, <strong>corridors matter more than isolated assets</strong>: ports, roads, chip fabs, power lines, and coastlines become strategically meaningful when linked into movement systems. Second, <strong>war behaves like a systems shock</strong>, affecting shipping, fuel, insurance, logistics, and digital infrastructure rather than only battlefronts. Third, <strong>India’s infrastructure future looks layered, not single-mode</strong>: roads, rail, waterways, ports, and digital platforms work best when treated as one stack rather than disconnected silos. Fourth, <strong>physical systems increasingly need computational mirrors</strong> — telemetry, digital twins, predictive layers, and command logic. Fifth, many infrastructures are drifting toward <strong>dual-use value</strong>, meaning they transport, sense, coordinate, and adapt at the same time.
-        <br><br>
-        In short: the project is not really about random predictions. It is about the transition from standalone assets to coordinated systems.
-      </div>
-    </div>
-    <div class="verdict v-framework">◆ Meta Synthesis</div>
-  </div>
-
-  <div class="obs">
-    <div class="obs-head">
-      <div class="obs-num">Research Backbone — Older Papers, Current Reports & Public Evidence</div>
-      <div class="obs-text">
-        These sources do not prove every observation in full, but they provide a stronger backbone: older academic work for structural logic, and recent reporting, policy texts, and public reports for present-day relevance.
-      </div>
-    </div>
-    <div class="evidence">
-      <div class="ev-title">Suggested Source Shelf</div>
-      <div class="sources">
-        <div class="src">Russian cyber activity and NATO targeting — <a href="https://www.microsoft.com/en-us/corporate-responsibility/cybersecurity/microsoft-digital-defense-report-2025/" target="_blank">Microsoft Digital Defense Report 2025</a></div>
-        <div class="src">Russian cyber targeting summary — <a href="https://www.euronews.com/next/2025/10/17/russian-cyberattacks-against-nato-members-up-25-in-a-year-analysis-shows" target="_blank">Euronews summary of Microsoft 2025 report</a></div>
-        <div class="src">Urbanization baseline — <a href="https://population.un.org/wup/assets/Publications/undesa_pd_2025_wup2025_summary_of_results_final.pdf" target="_blank">UN World Urbanization Prospects 2025</a></div>
-        <div class="src">Older urbanization benchmark — <a href="https://population.un.org/wup/assets/WUP2018-Highlights.pdf" target="_blank">UN World Urbanization Prospects 2018</a></div>
-        <div class="src">EV market growth — <a href="https://www.iea.org/reports/global-ev-outlook-2025/executive-summary" target="_blank">IEA Global EV Outlook 2025</a></div>
-        <div class="src">AI regulation and human oversight — <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng" target="_blank">EU AI Act official text</a></div>
-        <div class="src">Human oversight framing in EU process text — <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CONSIL:ST_7536_2024_INIT" target="_blank">Council text</a></div>
-        <div class="src">Ports and national development — <a href="https://www.sciencedirect.com/science/article/pii/S2214241X15000413" target="_blank">Dwarakish &amp; Salim 2015</a></div>
-        <div class="src">Corridor governance and sustainability — <a href="https://www.sciencedirect.com/science/article/pii/S2213624X1730247X" target="_blank">Öberg 2018</a></div>
-        <div class="src">Transport corridors and spatial disparity — <a href="https://www.sciencedirect.com/science/article/abs/pii/S0966692319309147" target="_blank">Jain 2020</a></div>
-        <div class="src">Transport access and economic outcomes in China — <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304387820300171" target="_blank">Banerjee et al. 2020</a></div>
-        <div class="src">Transportation accessibility and regional growth — <a href="https://www.sciencedirect.com/science/article/abs/pii/S1361920920306404" target="_blank">Chen et al. 2020</a></div>
-        <div class="src">Digital twin technology in cyber-physical systems — <a href="https://www.nature.com/research-intelligence/nri-topic-summaries/digital-twin-technology-in-cyber-physical-systems-micro-1610" target="_blank">Nature research summary</a></div>
-        <div class="src">Digital twinning of river basins — <a href="https://www.nature.com/articles/s44304-024-00047-2" target="_blank">Nature Water 2024</a></div>
-        <div class="src">Digital twins of the Earth — <a href="https://www.nature.com/articles/s43247-024-01626-x" target="_blank">Communications Earth &amp; Environment 2024</a></div>
-        <div class="src">Digital twins for health — <a href="https://www.nature.com/articles/s41746-024-01073-0" target="_blank">npj Digital Medicine 2024</a></div>
-        <div class="src">BBIN framework agreement — <a href="https://aric.adb.org/initiative/bangladesh-bhutan-india-and-nepal-motor-vehicles-agreement" target="_blank">ADB ARIC</a></div>
-        <div class="src">Bangladesh Bay Terminal upgrade — <a href="https://www.reuters.com/markets/asia/bangladesh-world-bank-sign-850-million-deal-boost-jobs-trade-2025-04-24/" target="_blank">Reuters 2025</a></div>
-        <div class="src">India-Bangladesh transshipment reversal — <a href="https://www.reuters.com/world/india/india-withdraws-transhipment-facility-bangladesh-exports-via-land-borders-2025-04-09/" target="_blank">Reuters 2025</a></div>
-        <div class="src">Hormuz shipping disruption — <a href="https://www.reuters.com/world/cargo-ship-hit-by-projectile-strait-hormuz-crew-evacuates-2026-03-11/" target="_blank">Reuters 2026</a></div>
-        <div class="src">Hormuz oil/LNG disruption graphic — <a href="https://www.reuters.com/graphics/IRAN-CRISIS/OIL-LNG/mopaokxlypa/" target="_blank">Reuters graphics 2026</a></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer class="doc-footer">
-  <div class="author-block">
-    <div class="author-name">Pb</div>
-    <div class="author-note">Thoughts are partially mine — the world filled in the rest.</div>
-  </div>
-  <span>70 observations · 12 sections · March 2026</span>
-</footer>
+<footer class="footer" id="footer"><div><div class="name">Pb</div><div>Final GitHub-ready hybrid build</div></div><div>Old broad format + fuller dossiers + PDF strategic layer</div></footer>
 </div>
-
 <script>
-const prog = document.getElementById('prog');
-window.addEventListener('scroll', () => {
-  const h = document.documentElement;
-  prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
-});
-
-let use24Hour = false;
-
-function updateClock() {
-  const now = new Date();
-  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-  let hours = now.getHours();
-  let suffix = '';
-  if (!use24Hour) {
-    suffix = hours >= 12 ? ' PM' : ' AM';
-    hours = hours % 12;
-    if (hours === 0) hours = 12;
-  }
-
-  const hh = String(hours).padStart(2, '0');
-  const mm = String(now.getMinutes()).padStart(2, '0');
-  const ss = String(now.getSeconds()).padStart(2, '0');
-  document.getElementById('digitalClock').textContent = `${hh}:${mm}:${ss}${suffix}`;
-
-  document.getElementById('clockDate').textContent =
-    `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-  const off = -now.getTimezoneOffset();
-  const sign = off >= 0 ? '+' : '-';
-  const oh = String(Math.floor(Math.abs(off)/60)).padStart(2,'0');
-  const om = String(Math.abs(off)%60).padStart(2,'0');
-  document.getElementById('clockTz').textContent = `${tz} UTC${sign}${oh}:${om}`;
-}
-
-document.getElementById('clockToggle').addEventListener('click', () => {
-  use24Hour = !use24Hour;
-  document.getElementById('clockToggle').textContent = use24Hour ? '12H' : '24H';
-  updateClock();
-});
-
-updateClock();
-setInterval(updateClock, 1000);
-
-const SECTION_MAP = [
-  { id:'sA', label:'A', name:'Geopolitics', keys:['russia','china','taiwan','nato','ukraine','india','japan','military','geopolit','defense','defence','cyber','hack','war','conflict','sanction','nuclear','missile','iran','israel','hormuz','shipping lane','oil'] },
-  { id:'sB', label:'B', name:'Semiconductors & AI', keys:['chip','semiconductor','artificial intelligence',' ai ','quantum','compute','silicon','nvidia','tsmc','intel','amd','data center','microchip','processor','foundry','electronics','gpu'] },
-  { id:'sC', label:'C', name:'Materials & Resources', keys:['battery','lithium','cobalt','mining','mineral','material','sand','resource','rare earth','copper','nickel','graphite','critical mineral'] },
-  { id:'sD', label:'D', name:'Urban & Mobility', keys:['city','urban','transport','mobility','metro','subway','tunnel','infrastructure','traffic','logistics','smart city','housing','congestion','public transit','rail','waterway','port','shipping','coastal'] },
-  { id:'sE', label:'E', name:'Biology & Tech', keys:['biotech','genetic','neural','brain','robot','biology','medical device','implant','sensor network','ecosystem','crispr','gene','organoid'] },
-  { id:'sF', label:'F', name:'Electric Vehicles', keys:['electric vehicle','ev ','tesla','byd','drivetrain','motor','charging','ev sales','battery range','electric car','porsche taycan','rivian','lucid'] },
-  { id:'sG', label:'G', name:'Fashion & Textiles', keys:['fashion','textile','clothing','fabric','apparel','garment','dye','weaving'] },
-  { id:'sH', label:'H', name:'Industrial Cleanliness', keys:['cleanroom','pharmaceutical','semiconductor fab','clean manufacturing','asml','contamination','sterile'] },
-  { id:'sI', label:'I', name:'Sports & Culture', keys:['football','soccer','tennis','sport','fifa','olympics','cricket','formula 1','nba'] },
-  { id:'sJ', label:'J', name:'Systems & Governance', keys:['climate','governance','policy','regulation','smart city','ai regulation','system','modular','access economy','subscription','sustainability','as-a-service'] },
-  { id:'sK', label:'K', name:'Corridors & Systems Risk', keys:['corridor','bay of bengal','bbin','grid','cross-border power','shipping risk','strategic arc','energy corridor','data corridor','dual-use','infrastructure stack','supply chain resilience'] },
-  { id:'sR', label:'R', name:'Research Backbone', keys:['research','paper','journal','study','digital twin','nature','reuters','world bank','adb'] }
-];
-
-function matchSections(text) {
-  const lower = text.toLowerCase();
-  const matched = [];
-  for (const sec of SECTION_MAP) {
-    if (sec.keys.some(k => lower.includes(k))) matched.push(sec);
-  }
-  return matched.slice(0, 2);
-}
-
-const NEWS_FEEDS = [
-  { name:'NYT World', url:'https://rss.nytimes.com/services/xml/rss/nyt/World.xml' },
-  { name:'NYT Tech', url:'https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml' },
-  { name:'Guardian World', url:'https://www.theguardian.com/world/rss' },
-  { name:'Guardian Tech', url:'https://www.theguardian.com/technology/rss' },
-  { name:'TOI', url:'https://timesofindia.indiatimes.com/rssfeedstopstories.cms' },
-  { name:'BBC World', url:'https://feeds.bbci.co.uk/news/world/rss.xml' },
-  { name:'BBC Tech', url:'https://feeds.bbci.co.uk/news/technology/rss.xml' },
-  { name:'Reuters World', url:'https://feeds.reuters.com/reuters/worldNews' },
-  { name:'Reuters Business', url:'https://feeds.reuters.com/reuters/businessNews' }
-];
-
-async function fetchRSS(feed) {
-  const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(feed.url)}`;
-  try {
-    const res = await fetch(proxy, { signal: AbortSignal.timeout(7000) });
-    const data = await res.json();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(data.contents, 'text/xml');
-    const items = [...doc.querySelectorAll('item')].slice(0, 12);
-    return items.map(item => ({
-      title: item.querySelector('title')?.textContent?.trim() || '',
-      link: item.querySelector('link')?.textContent?.trim() || '#',
-      source: feed.name
-    })).filter(i => i.title.length > 10);
-  } catch(e) {
-    return [];
-  }
-}
-
-async function loadIntel() {
-  const grid = document.getElementById('intelGrid');
-  grid.innerHTML = '<div class="intel-loading">Connecting to news sources...</div>';
-
-  const results = await Promise.all(NEWS_FEEDS.map(f => fetchRSS(f)));
-  const all = results.flat();
-
-  const matched = [];
-  for (const item of all) {
-    const secs = matchSections(item.title);
-    if (secs.length > 0) matched.push({ ...item, sections: secs });
-  }
-
-  const seen = new Set();
-  const unique = matched.filter(item => {
-    const key = item.title.slice(0, 54).toLowerCase();
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-
-  unique.sort((a, b) => {
-    const score = (x) => {
-      const t = x.title.toLowerCase();
-      let s = 0;
-      if (/(chip|semiconductor|ai|electronics|nvidia|tsmc|intel)/.test(t)) s += 4;
-      if (/(rail|metro|infrastructure|port|waterway|shipping|logistics|transit)/.test(t)) s += 4;
-      if (/(energy|oil|gas|grid|power|electricity)/.test(t)) s += 4;
-      if (/(war|iran|israel|missile|attack|conflict|hormuz|red sea)/.test(t)) s += 5;
-      return s;
-    };
-    return score(b) - score(a);
-  });
-
-  const display = unique.slice(0, 14);
-  const tickerItems = unique.slice(0, 36);
-  buildTicker(tickerItems);
-
-  if (display.length === 0) {
-    grid.innerHTML = '<div class="intel-empty">No matching headlines found right now — try refreshing again in a moment.</div>';
-    return;
-  }
-
-  grid.innerHTML = display.map(item => `
-    <div class="intel-card">
-      <div class="intel-card-tag">
-        ${item.sections.map(s =>
-          `<span class="sec-badge s${s.label}" title="${s.name}">§${s.label} · ${s.name}</span>`
-        ).join('')}
-        <span class="intel-src-badge">${item.source}</span>
-      </div>
-      <div class="intel-headline">
-        <a href="${item.link}" target="_blank" rel="noopener">${item.title}</a>
-      </div>
-    </div>
-  `).join('');
-}
-
-function buildTicker(items) {
-  if (items.length === 0) return;
-  const track = document.getElementById('tickerTrack');
-  const doubled = [...items, ...items];
-  track.innerHTML = doubled.map(item => `
-    <span class="ticker-item">
-      <span class="ticker-dot"></span>
-      <a href="${item.link}" target="_blank" rel="noopener">
-        <span class="ticker-src">${item.source}</span>${item.title}
-      </a>
-    </span>
-  `).join('');
-  track.style.display = 'flex';
-  document.getElementById('tickerLoading').style.display = 'none';
-}
-
-loadIntel();
-
-const cOpts = {
-  plugins:{
-    legend:{display:false},
-    tooltip:{
-      backgroundColor:'#0E1728',
-      titleFont:{family:"'Outfit',sans-serif",size:11},
-      bodyFont:{family:"'Outfit',sans-serif",size:11},
-      padding:10,
-      cornerRadius:8
-    }
-  },
-  scales:{
-    x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#8EA3C0',font:{family:"'Outfit',sans-serif",size:10}}},
-    y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#8EA3C0',font:{family:"'Outfit',sans-serif",size:10}}}
-  }
-};
-
-const cyberCanvas = document.getElementById('cyberTargets');
-if (cyberCanvas) {
-  new Chart(cyberCanvas,{
-    type:'bar',
-    data:{
-      labels:['US','UK','Ukraine','Germany','Belgium','Italy','Estonia','France','Netherlands','Poland'],
-      datasets:[{
-        data:[20,12,11,6,5,5,5,5,5,5],
-        backgroundColor:ctx=>ctx.dataIndex===0?'#FF6B6B':ctx.dataIndex===1?'#F08C5A':'rgba(255,107,107,.45)',
-        borderRadius:5,borderSkipped:false
-      }]
-    },
-    options:{...cOpts,plugins:{...cOpts.plugins,tooltip:{...cOpts.plugins.tooltip,callbacks:{label:c=>' '+c.parsed.y+'% of attacks'}}}}
-  });
-}
-
-const tsmcCanvas = document.getElementById('tsmc');
-if (tsmcCanvas) {
-  new Chart(tsmcCanvas,{
-    type:'doughnut',
-    data:{
-      labels:['TSMC','Samsung','SMIC','UMC','GlobalFoundries','Others'],
-      datasets:[{
-        data:[67.1,8.1,5.5,4.7,4.6,10],
-        backgroundColor:['#D4A044','#68B4FF','#FF6B6B','#57E092','#BB8ADB','#395071'],
-        borderColor:'#091221',borderWidth:3
-      }]
-    },
-    options:{
-      plugins:{
-        legend:{display:true,position:'right',labels:{color:'#9BB0CB',font:{family:"'Outfit',sans-serif",size:11},boxWidth:12,padding:10}},
-        tooltip:{
-          backgroundColor:'#0E1728',
-          titleFont:{family:"'Outfit',sans-serif",size:11},
-          bodyFont:{family:"'Outfit',sans-serif",size:11},
-          padding:10,cornerRadius:8,
-          callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}
-        }
-      },
-      cutout:'65%'
-    }
-  });
-}
-
-const urbanCanvas = document.getElementById('urbanPop');
-if (urbanCanvas) {
-  new Chart(urbanCanvas,{
-    type:'line',
-    data:{
-      labels:['1950','1960','1970','1980','1990','2000','2010','2020','2025','2030E','2040E','2050E'],
-      datasets:[{
-        data:[30,33,37,39,43,47,52,56,57,60,64,68],
-        borderColor:'#D4A044',
-        backgroundColor:'rgba(212,160,68,.12)',
-        borderWidth:2.5,
-        pointBackgroundColor:ctx=>ctx.dataIndex>=8?'#8FC4FF':'#D4A044',
-        pointRadius:5,
-        fill:true,
-        tension:.35
-      }]
-    },
-    options:{
-      ...cOpts,
-      plugins:{...cOpts.plugins,tooltip:{...cOpts.plugins.tooltip,callbacks:{label:c=>' '+c.parsed.y+'% urban'}}},
-      scales:{...cOpts.scales,y:{...cOpts.scales.y,min:25,max:75,ticks:{callback:v=>v+'%',color:'#8EA3C0'}}}
-    }
-  });
-}
-
-const evCanvas = document.getElementById('evSales');
-if (evCanvas) {
-  new Chart(evCanvas,{
-    type:'bar',
-    data:{
-      labels:['2019','2020','2021','2022','2023','2024','2025E'],
-      datasets:[{
-        data:[2.1,3.0,6.6,10.2,13.7,17.1,20.0],
-        backgroundColor:ctx=>ctx.dataIndex===5?'#57E092':ctx.dataIndex===6?'rgba(87,224,146,.55)':'rgba(87,224,146,.34)',
-        borderRadius:5,borderSkipped:false
-      }]
-    },
-    options:{...cOpts,plugins:{...cOpts.plugins,tooltip:{...cOpts.plugins.tooltip,callbacks:{label:c=>' '+c.parsed.y+'M units'}}}}
-  });
-}
+const prog=document.getElementById('prog');window.addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'});
+function tick(){const n=new Date();let h=n.getHours();let suf=h>=12?' PM':' AM';h=h%12||12;const hh=String(h).padStart(2,'0');const mm=String(n.getMinutes()).padStart(2,'0');const ss=String(n.getSeconds()).padStart(2,'0');document.getElementById('clock').textContent=`${hh}:${mm}:${ss}${suf}`;const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];document.getElementById('date').textContent=`${days[n.getDay()]} ${n.getDate()} ${months[n.getMonth()]} ${n.getFullYear()}`;} setInterval(tick,1000);tick();
+const common={plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#8ea3c0'}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#8ea3c0'}}}};
+new Chart(document.getElementById('urbanPop'),{type:'line',data:{labels:['1950','1960','1970','1980','1990','2000','2010','2020','2025','2030E','2040E','2050E'],datasets:[{data:[30,33,37,39,43,47,52,56,57,60,64,68],borderColor:'#d4a044',backgroundColor:'rgba(212,160,68,.12)',fill:true,tension:.35}]},options:{...common,plugins:{legend:{display:false}},scales:{...common.scales,y:{...common.scales.y,min:25,max:75}}}});
+new Chart(document.getElementById('evSales'),{type:'bar',data:{labels:['2019','2020','2021','2022','2023','2024','2025E'],datasets:[{data:[2.1,3.0,6.6,10.2,13.7,17.1,20.0],backgroundColor:['rgba(87,224,146,.34)','rgba(87,224,146,.34)','rgba(87,224,146,.34)','rgba(87,224,146,.34)','rgba(87,224,146,.34)','#57e092','rgba(87,224,146,.55)']}]},options:common});
+new Chart(document.getElementById('tsmc'),{type:'doughnut',data:{labels:['TSMC','Samsung','SMIC','UMC','GlobalFoundries','Others'],datasets:[{data:[67.1,8.1,5.5,4.7,4.6,10],backgroundColor:['#d4a044','#7bbcff','#ff6b6b','#57e092','#bb8adb','#395071'],borderColor:'#091221',borderWidth:3}]},options:{plugins:{legend:{display:true,position:'right',labels:{color:'#9bb0cb'}}},cutout:'65%'}});
 </script>
 </body>
 </html>
